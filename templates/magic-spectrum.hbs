@@ -20,6 +20,55 @@
       </summary>
 
       <div class="mes-spectrum-list">
+        {{#each categories}}
+        <details class="mes-afflict-category" data-mes-afflict-category="{{id}}" {{#if open}}open{{/if}}>
+          <summary>
+            <span>{{localize label}}</span>
+            <i class="fa-solid fa-chevron-down" inert></i>
+          </summary>
+          <div class="mes-afflict-category-list">
+            {{#each entries}}
+            <article class="mes-spectrum-row" data-mes-spectrum-id="{{id}}">
+              <div class="mes-spectrum-name">
+                <strong>{{localize label}}</strong>
+                {{#if complete}}<i class="fa-solid fa-crown" data-tooltip="{{localize 'MES.Common.MaximumReached'}}"></i>{{/if}}
+              </div>
+
+              <div class="mes-circle-display" data-tooltip="{{localize 'MES.Magic.Circle'}}">
+                <strong>{{circle}}</strong>
+                <span>×</span>
+                <img src="modules/magias-e-skills/assets/pentagram.svg" alt="" inert>
+              </div>
+
+              <div class="mes-spectrum-progress-block">
+                <div class="mes-progress-label">
+                  <span>{{localize "MES.Common.Progress"}}</span>
+                  <strong>{{progress}}%</strong>
+                </div>
+                <div class="mes-skill-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{progress}}">
+                  <span style="--mes-progress: {{progress}}%"></span>
+                  <b>{{progress}}%</b>
+                </div>
+
+                {{#if @root.editable}}
+                <div class="mes-delta-row mes-spectrum-delta-row">
+                  <label>
+                    <span>{{localize "MES.Magic.ProgressAdjustment"}}</span>
+                    <input type="text" inputmode="numeric" data-mes-progress-delta placeholder="+3 / -5"
+                           aria-label="{{localize 'MES.Magic.ProgressAdjustment'}}">
+                  </label>
+                  <button type="button" data-mes-apply-delta>
+                    <i class="fa-solid fa-check" inert></i> {{localize "MES.Skills.Apply"}}
+                  </button>
+                </div>
+                {{/if}}
+              </div>
+            </article>
+            {{/each}}
+          </div>
+        </details>
+        {{/each}}
+
         {{#each entries}}
         <article class="mes-spectrum-row" data-mes-spectrum-id="{{id}}">
           <div class="mes-spectrum-name">

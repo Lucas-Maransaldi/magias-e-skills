@@ -2,7 +2,8 @@
   "MES": {
     "Tabs": {
       "MagicSpectrum": "Espectros Mágicos",
-      "ExtraSkills": "Extra Skills"
+      "ExtraSkills": "Extra Skills",
+      "Weapons": "Armas"
     },
     "Common": {
       "Progress": "Progresso",
@@ -36,8 +37,21 @@
       "NoDescription": "Nenhuma descrição informada."
       ,"SearchPlaceholder": "Buscar Extra Skill..."
     },
+    "Weapons": {
+      "Kicker": "Treinamento marcial",
+      "Title": "Armas",
+      "NewPlaceholder": "Nome da nova arma",
+      "SearchPlaceholder": "Buscar arma...",
+      "Name": "Nome da arma",
+      "SelectIcon": "Selecionar ícone da arma",
+      "Delete": "Excluir arma",
+      "DeleteTitle": "Excluir arma",
+      "DescriptionPlaceholder": "Descreva esta arma...",
+      "Empty": "Nenhuma maestria de arma cadastrada."
+    },
     "Notifications": {
       "NameRequired": "Informe um nome para a Extra Skill.",
+      "WeaponNameRequired": "Informe um nome para a arma.",
       "InvalidProgressDelta": "Informe um ajuste inteiro, como +3 ou -5."
     },
     "Delete": {
@@ -55,12 +69,12 @@
     "Spectra": {
       "Afflict": "Afligir",
       "afflict": {
-        "body": "Corpo",
-        "movement": "Movimento",
-        "senses": "Sentidos",
-        "magical": "Mágicos",
-        "fear": "Medo",
-        "elemental": "Elemental"
+        "body": { "Label": "Corpo", "damagedAttribute": "Atributo Danificado", "drainedAttribute": "Atributo Drenado", "drainedEnergy": "Energia Drenada", "vulnerable": "Vulnerável", "helpless": "Indefeso", "exposed": "Exposto", "condemned": "Condenado", "bloodiedAndBloody": "Ensanguentado e Sangrento" },
+        "movement": { "Label": "Movimento", "grappled": "Agarrado", "paralyzed": "Paralisado", "prone": "Caído", "incapacitated": "Incapacitado", "stunned": "Atordoado" },
+        "senses": { "Label": "Sentidos", "fascinated": "Fascínio", "blinded": "Cego", "confused": "Confuso", "deafened": "Surdo" },
+        "magical": { "Label": "Mágicos", "cursed": "Amaldiçoado", "poisoned": "Envenenado", "enchanted": "Enfeitiçado", "exhaustion": "Exaustão", "incorporeal": "Incorpóreo", "invisible": "Invisível", "petrified": "Petrificado" },
+        "fear": { "Label": "Medo", "shaken": "Abalado", "frightened": "Assustado", "panic": "Pânico" },
+        "elemental": { "Label": "Elementais", "scorched": "Chamuscado", "wet": "Molhado", "electrified": "Eletrificado", "chilled": "Resfriado", "frozen": "Congelado" }
       },
       "Damage": "Dano",
       "damage": {
@@ -79,7 +93,8 @@
         "sonic": "Sônico",
         "radiant": "Radiante",
         "necrotic": "Necrótico",
-        "psychic": "Psíquico"
+        "psychic": "Psíquico",
+        "pureForce": "Força Pura"
       },
       "Attack": "Ataque",
       "attack": {
@@ -136,7 +151,8 @@
       "red": {
         "explosion": "Explosão",
         "emanate": "Emanar",
-        "spread": "Espalhar"
+        "spread": "Espalhar",
+        "breath": "Sopro"
       },
       "Orange": "Espectro Laranja",
       "orange": {
@@ -144,7 +160,10 @@
         "repel": "Repelir",
         "amplify": "Amplificar",
         "identify": "Identificar",
-        "connect": "Conectar"
+        "connect": "Conectar",
+        "mitigate": "Atenuar",
+        "damageReduction": "Redução de Dano",
+        "immunity": "Imunidade"
       },
       "Yellow": "Espectro Amarelo",
       "yellow": {
@@ -199,7 +218,8 @@
         "body": "Corpo",
         "soul": "Alma",
         "undead": "Morto-Vivo",
-        "curse": "Maldição"
+        "curse": "Maldição",
+        "blood": "Sangue"
       }
     }
   }

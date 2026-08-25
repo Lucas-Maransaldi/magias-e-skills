@@ -67,6 +67,12 @@
 .dnd5e2 .mes-spectrum-accordion > summary i { transition: transform 160ms ease; }
 .dnd5e2 .mes-spectrum-accordion[open] > summary i { transform: rotate(180deg); }
 .dnd5e2 .mes-spectrum-accordion .mes-spectrum-list { padding: 0.35rem 0.55rem; }
+.dnd5e2 .mes-afflict-category { margin: 0.35rem 0; overflow: hidden; border: 1px solid color-mix(in srgb, currentColor 16%, transparent); border-radius: 4px; }
+.dnd5e2 .mes-afflict-category > summary { display: flex; align-items: center; justify-content: space-between; padding: 0.55rem 0.7rem; cursor: pointer; background: color-mix(in srgb, var(--mes-spectrum-color) 10%, transparent); font-weight: 700; text-transform: uppercase; list-style: none; }
+.dnd5e2 .mes-afflict-category > summary::-webkit-details-marker { display: none; }
+.dnd5e2 .mes-afflict-category > summary i { transition: transform 160ms ease; }
+.dnd5e2 .mes-afflict-category[open] > summary i { transform: rotate(180deg); }
+.dnd5e2 .mes-afflict-category-list { padding: 0.25rem 0.4rem; }
 .dnd5e2 .mes-spectrum-accordion .mes-spectrum-row { grid-template-columns: minmax(8rem, 0.85fr) 4.5rem minmax(12rem, 1.35fr); min-height: 4.2rem; }
 .dnd5e2 .mes-circle-display { display: flex; align-items: center; justify-content: center; gap: 0.25rem; min-width: 4rem; color: #a86cdb; font-size: 0.82rem; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65); }
 .dnd5e2 .mes-circle-display strong { color: var(--color-text-primary); font-size: 1.1rem; }
@@ -82,14 +88,14 @@
 .dnd5e2 .mes-add-row button { width: auto; white-space: nowrap; }
 .dnd5e2 .mes-skill-list { display: grid; gap: 0.85rem; }
 .dnd5e2 .mes-skill-card { overflow: hidden; border: 1px solid color-mix(in srgb, currentColor 22%, transparent); border-radius: 8px; background: linear-gradient(135deg, color-mix(in srgb, var(--color-cool-5, #e7e5df) 42%, transparent), color-mix(in srgb, #5e2a84 7%, transparent)); box-shadow: 0 2px 7px rgba(0, 0, 0, 0.16); }
-.dnd5e2 .mes-skill-header { justify-content: flex-start; min-height: 5rem; margin: 0; padding: 0.75rem; border-bottom: 1px solid color-mix(in srgb, currentColor 15%, transparent); }
+.dnd5e2 .mes-skill-header { align-items: flex-start; justify-content: flex-start; min-height: 5rem; margin: 0; padding: 0.75rem; border-bottom: 1px solid color-mix(in srgb, currentColor 15%, transparent); }
 .dnd5e2 .mes-skill-icon { position: relative; flex: 0 0 3.75rem; width: 3.75rem; height: 3.75rem; margin: 0; padding: 0; overflow: hidden; border: 1px solid var(--dnd5e-color-gold, #9f9275); border-radius: 7px; background: rgba(0, 0, 0, 0.16); }
 .dnd5e2 .mes-skill-icon img { width: 100%; height: 100%; border: 0; object-fit: cover; }
 .dnd5e2 .mes-skill-icon-editable > i { position: absolute; right: 2px; bottom: 2px; padding: 0.2rem; border-radius: 50%; background: rgba(0, 0, 0, 0.75); color: white; font-size: 0.6rem; }
 .dnd5e2 .mes-skill-identity { flex: 1; min-width: 0; }
 .dnd5e2 .mes-skill-identity h3 { margin: 0 0 0.35rem; overflow: hidden; font-size: 1.12rem; text-overflow: ellipsis; white-space: nowrap; }
-.dnd5e2 .mes-skill-name { width: 100%; margin-bottom: 0.3rem; font-size: 1.05rem; font-weight: 700; }
-.dnd5e2 .mes-icon-button { align-self: flex-start; flex: 0 0 2rem; width: 2rem; min-height: 1.75rem; margin: 0; color: var(--color-level-error, #9f2222); }
+.dnd5e2 .mes-skill-name { box-sizing: border-box; width: 100%; height: 2rem; min-height: 2rem; margin: 0 0 0.3rem; font-size: 1.05rem; font-weight: 700; }
+.dnd5e2 .mes-icon-button { align-self: flex-start; flex: 0 0 2rem; box-sizing: border-box; width: 2rem; height: 2rem; min-height: 2rem; margin: 0; padding: 0; color: var(--color-level-error, #9f2222); }
 .dnd5e2 .mes-stars { display: flex; align-items: center; gap: 0.16rem; color: color-mix(in srgb, currentColor 45%, transparent); }
 .dnd5e2 .mes-star { flex: 0 0 auto; width: auto; min-height: auto; margin: 0; padding: 0.08rem; border: 0; background: transparent; color: inherit; font-size: 1rem; line-height: 1; box-shadow: none; }
 .dnd5e2 button.mes-star:hover { color: #d4a72c; text-shadow: 0 0 5px rgba(212, 167, 44, 0.65); box-shadow: none; }
