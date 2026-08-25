@@ -2,7 +2,7 @@
   "id": "magias-e-skills",
   "title": "Magias e Skills",
   "description": "Espectro de Magia e Extra Skills para fichas de personagem D&D5e.",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "authors": [
     {
       "name": "Lucas",
@@ -11,7 +11,7 @@
   ],
   "url": "https://github.com/Lucas-Maransaldi/magias-e-skills",
   "manifest": "https://github.com/Lucas-Maransaldi/magias-e-skills/releases/latest/download/module.json",
-  "download": "https://github.com/Lucas-Maransaldi/magias-e-skills/releases/download/v0.5.0/magias-e-skills.zip",
+  "download": "https://github.com/Lucas-Maransaldi/magias-e-skills/releases/download/v0.6.0/magias-e-skills.zip",
   "compatibility": {
     "minimum": "13.351",
     "verified": "13.351",
