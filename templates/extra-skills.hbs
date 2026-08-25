@@ -1,0 +1,118 @@
+<section class="tab mes-tab mes-skills-tab {{tab.cssClass}}" data-tab="{{tab.id}}" data-group="{{tab.group}}">
+  <header class="mes-heading">
+    <div>
+      <p class="mes-kicker">{{localize "MES.Skills.Kicker"}}</p>
+      <h2>{{localize "MES.Skills.Title"}}</h2>
+    </div>
+  </header>
+
+  <label class="mes-search-bar">
+    <i class="fa-solid fa-magnifying-glass" inert></i>
+    <input type="search" data-mes-search-skills placeholder="{{localize 'MES.Skills.SearchPlaceholder'}}"
+           aria-label="{{localize 'MES.Skills.SearchPlaceholder'}}">
+  </label>
+
+  <p class="mes-filter-empty" data-mes-filter-empty hidden>{{localize "MES.Common.NoSearchResults"}}</p>
+
+  {{#if editable}}
+  <div class="mes-add-row">
+    <input type="text" data-mes-new-skill placeholder="{{localize 'MES.Skills.NewPlaceholder'}}">
+    <button type="button" data-mes-add-skill>
+      <i class="fa-solid fa-plus" inert></i> {{localize "MES.Skills.Add"}}
+    </button>
+  </div>
+  {{/if}}
+
+  <div class="mes-skill-list">
+    {{#each extraSkills}}
+    <article class="mes-skill-card" data-mes-skill-id="{{id}}">
+      <header class="mes-skill-header">
+        {{#if @root.editable}}
+        <button type="button" class="mes-skill-icon mes-skill-icon-editable" data-mes-pick-icon
+                data-tooltip="{{localize 'MES.Skills.SelectIcon'}}" aria-label="{{localize 'MES.Skills.SelectIcon'}}">
+          <img src="{{icon}}" alt="">
+          <i class="fa-solid fa-camera" inert></i>
+        </button>
+        {{else}}
+        <div class="mes-skill-icon"><img src="{{icon}}" alt=""></div>
+        {{/if}}
+
+        <div class="mes-skill-identity">
+          {{#if @root.editable}}
+          <input class="mes-skill-name" type="text" value="{{name}}" data-mes-field="name"
+                 aria-label="{{localize 'MES.Skills.Name'}}">
+          {{else}}
+          <h3>{{name}}</h3>
+          {{/if}}
+
+          <div class="mes-stars" aria-label="{{localize 'MES.Skills.MasteryValue' mastery=mastery}}">
+            {{#each stars}}
+              {{#if @root.editable}}
+              <button type="button" class="mes-star {{#if filled}}filled{{/if}}" data-mes-set-mastery="{{value}}"
+                      data-tooltip="{{localize 'MES.Skills.SetMastery' mastery=value}}">
+                <i class="{{#if filled}}fa-solid{{else}}fa-regular{{/if}} fa-star" inert></i>
+              </button>
+              {{else}}
+              <i class="mes-star {{#if filled}}filled{{/if}} {{#if filled}}fa-solid{{else}}fa-regular{{/if}} fa-star" inert></i>
+              {{/if}}
+            {{/each}}
+            <span class="mes-mastery-number">{{mastery}}/6</span>
+          </div>
+        </div>
+
+        {{#if @root.editable}}
+        <button type="button" class="mes-icon-button" data-mes-delete-skill
+                data-tooltip="{{localize 'MES.Skills.Delete'}}" aria-label="{{localize 'MES.Skills.Delete'}}">
+          <i class="fa-solid fa-trash" inert></i>
+        </button>
+        {{/if}}
+      </header>
+
+      <div class="mes-skill-progress-block">
+        <div class="mes-progress-label">
+          <span>{{localize "MES.Common.Progress"}}</span>
+          <strong>{{progress}}%</strong>
+        </div>
+        <div class="mes-skill-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{progress}}">
+          <span style="--mes-progress: {{progress}}%"></span>
+          <b>{{progress}}%</b>
+        </div>
+
+        {{#if @root.editable}}
+        <div class="mes-delta-row">
+          <label>
+            <span>{{localize "MES.Skills.ProgressAdjustment"}}</span>
+            <input type="text" inputmode="numeric" data-mes-progress-delta placeholder="+3 / -5"
+                   aria-label="{{localize 'MES.Skills.ProgressAdjustment'}}">
+          </label>
+          <button type="button" data-mes-apply-delta>
+            <i class="fa-solid fa-check" inert></i> {{localize "MES.Skills.Apply"}}
+          </button>
+        </div>
+        {{/if}}
+      </div>
+
+      <details class="mes-description">
+        <summary><i class="fa-solid fa-align-left" inert></i> {{localize "MES.Skills.Description"}}</summary>
+        {{#if @root.editable}}
+        <textarea rows="5" data-mes-field="description"
+                  placeholder="{{localize 'MES.Skills.DescriptionPlaceholder'}}">{{description}}</textarea>
+        {{else}}
+          {{#if description}}
+          <p>{{description}}</p>
+          {{else}}
+          <p class="mes-muted">{{localize "MES.Skills.NoDescription"}}</p>
+          {{/if}}
+        {{/if}}
+      </details>
+
+      {{#if complete}}<p class="mes-help"><i class="fa-solid fa-crown" inert></i> {{localize "MES.Common.MaximumReached"}}</p>{{/if}}
+    </article>
+    {{else}}
+    <div class="mes-empty" data-mes-skills-empty>
+      <i class="fa-solid fa-graduation-cap" inert></i>
+      <p>{{localize "MES.Skills.Empty"}}</p>
+    </div>
+    {{/each}}
+  </div>
+</section>

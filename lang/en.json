@@ -1,0 +1,56 @@
+{
+  "MES": {
+    "Tabs": {
+      "MagicSpectrum": "Magic Spectra",
+      "ExtraSkills": "Extra Skills"
+    },
+    "Common": {
+      "Progress": "Progress",
+      "MaximumReached": "Maximum level reached.",
+      "NoSearchResults": "No results found."
+    },
+    "Magic": {
+      "Kicker": "Arcane knowledge",
+      "Title": "Magic Spectra",
+      "Circle": "Circle",
+      "Intro": "Each knowledge has its own circle and progress. At 100%, it automatically advances to the next circle.",
+      "ProgressAdjustment": "Adjust arcane progress",
+      "SearchPlaceholder": "Search knowledge or spectrum..."
+    },
+    "Skills": {
+      "Kicker": "Additional knowledge",
+      "Title": "Extra Skills",
+      "NewPlaceholder": "New skill name",
+      "Add": "Add",
+      "Name": "Skill name",
+      "Mastery": "Mastery",
+      "Delete": "Delete skill",
+      "Empty": "No Extra Skills registered.",
+      "SelectIcon": "Select icon",
+      "MasteryValue": "Mastery {mastery} of 6",
+      "SetMastery": "Set mastery to {mastery}",
+      "ProgressAdjustment": "Adjust progress",
+      "Apply": "Apply",
+      "Description": "Description",
+      "DescriptionPlaceholder": "Describe this Extra Skill...",
+      "NoDescription": "No description provided."
+      ,"SearchPlaceholder": "Search Extra Skill..."
+    },
+    "Notifications": {
+      "NameRequired": "Enter a name for the Extra Skill.",
+      "InvalidProgressDelta": "Enter a whole-number adjustment, such as +3 or -5."
+    },
+    "Delete": {
+      "Title": "Delete Extra Skill",
+      "Content": "Delete {name}?"
+    },
+    "Controls": {
+      "LevelDown": "Decrease one level",
+      "LevelUp": "Increase one level",
+      "RemoveProgress": "Remove 10% progress",
+      "AddProgress": "Add 10% progress",
+      "RemoveOneProgress": "Remove 1% progress",
+      "AddOneProgress": "Add 1% progress"
+    }
+  }
+}

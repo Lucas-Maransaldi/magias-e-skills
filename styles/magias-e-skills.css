@@ -1,0 +1,126 @@
+.dnd5e2.sheet.actor.character .mes-tab {
+  padding: 1rem;
+  overflow-y: auto;
+  color: var(--color-text-primary);
+}
+
+.dnd5e2 .mes-heading,
+.dnd5e2 .mes-skill-header,
+.dnd5e2 .mes-field-row,
+.dnd5e2 .mes-add-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.dnd5e2 .mes-heading {
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--dnd5e-color-gold, #9f9275);
+  padding-bottom: 0.6rem;
+}
+
+.dnd5e2 .mes-heading h2,
+.dnd5e2 .mes-heading p { margin: 0; }
+.dnd5e2 .mes-kicker { font-size: 0.7rem; text-transform: uppercase; opacity: 0.7; letter-spacing: 0.12em; }
+.dnd5e2 .mes-search-bar { position: relative; display: flex; align-items: center; margin-bottom: 0.85rem; }
+.dnd5e2 .mes-search-bar > i { position: absolute; left: 0.7rem; z-index: 1; opacity: 0.58; pointer-events: none; }
+.dnd5e2 .mes-search-bar > input { width: 100%; height: 2.25rem; padding-left: 2.15rem; border: 1px solid color-mix(in srgb, currentColor 24%, transparent); border-radius: 999px; background: rgba(0, 0, 0, 0.14); }
+.dnd5e2 .mes-search-bar > input:focus { border-color: #a86cdb; box-shadow: 0 0 0 1px #a86cdb, 0 0 7px rgba(168, 108, 219, 0.3); }
+.dnd5e2 .mes-filter-empty { margin: 0 0 0.85rem; padding: 1rem; border: 1px dashed color-mix(in srgb, currentColor 25%, transparent); border-radius: 6px; text-align: center; opacity: 0.65; }
+.dnd5e2 .mes-tab [hidden] { display: none !important; }
+.dnd5e2 .mes-rank { min-width: 3.5rem; padding: 0.55rem; border-radius: 50%; background: #3b1f52; color: white; font-size: 1.25rem; font-weight: 700; text-align: center; box-shadow: 0 0 0 3px #b69ad0; }
+.dnd5e2 .mes-card { margin-bottom: 0.8rem; padding: 1rem; border: 1px solid color-mix(in srgb, currentColor 22%, transparent); border-radius: 6px; background: color-mix(in srgb, var(--color-cool-5, #e7e5df) 38%, transparent); }
+.dnd5e2 .mes-field-row > label { flex: 1; }
+.dnd5e2 .mes-field-row label > span { display: block; margin-bottom: 0.25rem; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; }
+.dnd5e2 .mes-number-suffix { display: flex; align-items: center; gap: 0.3rem; }
+.dnd5e2 .mes-number-suffix input { flex: 1; }
+.dnd5e2 .mes-progress { height: 10px; margin-top: 0.85rem; overflow: hidden; border-radius: 999px; background: rgba(0, 0, 0, 0.18); }
+.dnd5e2 .mes-progress > span { display: block; width: min(var(--mes-progress), 100%); height: 100%; background: linear-gradient(90deg, #5e2a84, #b875dc); transition: width 180ms ease; }
+.dnd5e2 .mes-help { margin: 0.6rem 0 0; opacity: 0.75; }
+.dnd5e2 .mes-intro { margin: -0.35rem 0 1rem; opacity: 0.78; }
+.dnd5e2 .mes-spectrum-group { --mes-spectrum-color: #756b5a; margin-bottom: 1rem; border-left: 4px solid var(--mes-spectrum-color); }
+.dnd5e2 .mes-spectrum-group > h3 { margin: 0; padding: 0.45rem 0.7rem; background: color-mix(in srgb, var(--mes-spectrum-color) 16%, transparent); text-transform: uppercase; letter-spacing: 0.05em; }
+.dnd5e2 .mes-spectrum-list { padding: 0.35rem 0 0 0.6rem; }
+.dnd5e2 .mes-spectrum-row { display: grid; grid-template-columns: minmax(9rem, 1fr) 5.5rem minmax(8rem, 1fr); align-items: center; gap: 0.7rem; min-height: 3.5rem; padding: 0.4rem 0.5rem; border-bottom: 1px solid color-mix(in srgb, currentColor 14%, transparent); }
+.dnd5e2 .mes-spectrum-row:last-child { border-bottom: 0; }
+.dnd5e2 .mes-spectrum-name { display: flex; align-items: center; gap: 0.4rem; }
+.dnd5e2 .mes-spectrum-name i { color: #a77a12; }
+.dnd5e2 .mes-compact-field > span { display: block; margin-bottom: 0.12rem; font-size: 0.62rem; font-weight: 700; text-transform: uppercase; opacity: 0.72; }
+.dnd5e2 .mes-circle-input { display: flex; align-items: center; gap: 0.2rem; }
+.dnd5e2 .mes-circle-input input { width: 3.5rem; }
+.dnd5e2 .mes-progress-field .mes-progress { height: 5px; margin-top: 0.25rem; }
+.dnd5e2 .mes-adjust-controls { display: flex; gap: 0.2rem; margin-top: 0.25rem; }
+.dnd5e2 .mes-adjust-controls button { flex: 1; width: auto; min-height: 1.45rem; margin: 0; padding: 0.08rem 0.3rem; border: 1px solid color-mix(in srgb, currentColor 25%, transparent); border-radius: 3px; font-size: 0.68rem; line-height: 1; }
+.dnd5e2 .mes-adjust-controls button:hover { border-color: var(--mes-spectrum-color, #773f91); box-shadow: 0 0 4px color-mix(in srgb, var(--mes-spectrum-color, #773f91) 45%, transparent); }
+.dnd5e2 .mes-spectrum-accordion.mes-spectrum-red { --mes-spectrum-color: #a62c2c; }
+.dnd5e2 .mes-spectrum-accordion.mes-spectrum-orange { --mes-spectrum-color: #c66a1b; }
+.dnd5e2 .mes-spectrum-accordion.mes-spectrum-yellow { --mes-spectrum-color: #c59b17; }
+.dnd5e2 .mes-spectrum-accordion.mes-spectrum-green { --mes-spectrum-color: #347443; }
+.dnd5e2 .mes-spectrum-accordion.mes-spectrum-blue { --mes-spectrum-color: #286aa6; }
+.dnd5e2 .mes-spectrum-accordion.mes-spectrum-indigo { --mes-spectrum-color: #3f3c91; }
+.dnd5e2 .mes-spectrum-accordion.mes-spectrum-violet { --mes-spectrum-color: #773f91; }
+.dnd5e2 .mes-spectrum-accordion { --mes-spectrum-color: #756b5a; margin-bottom: 0.65rem; overflow: hidden; border: 1px solid color-mix(in srgb, currentColor 20%, transparent); border-left: 4px solid var(--mes-spectrum-color); border-radius: 5px; background: color-mix(in srgb, var(--mes-spectrum-color) 4%, transparent); }
+.dnd5e2 .mes-spectrum-accordion > summary { display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 0.8rem; cursor: pointer; background: color-mix(in srgb, var(--mes-spectrum-color) 16%, transparent); font-size: 0.95rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; list-style: none; user-select: none; }
+.dnd5e2 .mes-spectrum-accordion > summary::-webkit-details-marker { display: none; }
+.dnd5e2 .mes-spectrum-accordion > summary:hover { background: color-mix(in srgb, var(--mes-spectrum-color) 24%, transparent); }
+.dnd5e2 .mes-spectrum-accordion > summary i { transition: transform 160ms ease; }
+.dnd5e2 .mes-spectrum-accordion[open] > summary i { transform: rotate(180deg); }
+.dnd5e2 .mes-spectrum-accordion .mes-spectrum-list { padding: 0.35rem 0.55rem; }
+.dnd5e2 .mes-spectrum-accordion .mes-spectrum-row { grid-template-columns: minmax(8rem, 0.85fr) 4.5rem minmax(12rem, 1.35fr); min-height: 4.2rem; }
+.dnd5e2 .mes-circle-display { display: flex; align-items: center; justify-content: center; gap: 0.25rem; min-width: 4rem; color: #a86cdb; font-size: 0.82rem; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65); }
+.dnd5e2 .mes-circle-display strong { color: var(--color-text-primary); font-size: 1.1rem; }
+.dnd5e2 .mes-circle-display img { width: 1.35rem; height: 1.35rem; border: 0; filter: drop-shadow(0 0 3px rgba(168, 108, 219, 0.5)); }
+.dnd5e2 .mes-spectrum-progress-block { min-width: 0; padding: 0.15rem 0; }
+.dnd5e2 .mes-spectrum-progress-block .mes-progress-label { margin-bottom: 0.2rem; }
+.dnd5e2 .mes-spectrum-delta-row { margin-top: 0.4rem; }
+.dnd5e2 .mes-spectrum-delta-row label > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+.dnd5e2 .mes-spectrum-delta-row input,
+.dnd5e2 .mes-spectrum-delta-row button { box-sizing: border-box; height: 1.8rem; min-height: 1.8rem; margin: 0; padding-block: 0; line-height: 1.8rem; }
+.dnd5e2 .mes-add-row { margin-bottom: 1rem; }
+.dnd5e2 .mes-add-row input { flex: 1; }
+.dnd5e2 .mes-add-row button { width: auto; white-space: nowrap; }
+.dnd5e2 .mes-skill-list { display: grid; gap: 0.85rem; }
+.dnd5e2 .mes-skill-card { overflow: hidden; border: 1px solid color-mix(in srgb, currentColor 22%, transparent); border-radius: 8px; background: linear-gradient(135deg, color-mix(in srgb, var(--color-cool-5, #e7e5df) 42%, transparent), color-mix(in srgb, #5e2a84 7%, transparent)); box-shadow: 0 2px 7px rgba(0, 0, 0, 0.16); }
+.dnd5e2 .mes-skill-header { justify-content: flex-start; min-height: 5rem; margin: 0; padding: 0.75rem; border-bottom: 1px solid color-mix(in srgb, currentColor 15%, transparent); }
+.dnd5e2 .mes-skill-icon { position: relative; flex: 0 0 3.75rem; width: 3.75rem; height: 3.75rem; margin: 0; padding: 0; overflow: hidden; border: 1px solid var(--dnd5e-color-gold, #9f9275); border-radius: 7px; background: rgba(0, 0, 0, 0.16); }
+.dnd5e2 .mes-skill-icon img { width: 100%; height: 100%; border: 0; object-fit: cover; }
+.dnd5e2 .mes-skill-icon-editable > i { position: absolute; right: 2px; bottom: 2px; padding: 0.2rem; border-radius: 50%; background: rgba(0, 0, 0, 0.75); color: white; font-size: 0.6rem; }
+.dnd5e2 .mes-skill-identity { flex: 1; min-width: 0; }
+.dnd5e2 .mes-skill-identity h3 { margin: 0 0 0.35rem; overflow: hidden; font-size: 1.12rem; text-overflow: ellipsis; white-space: nowrap; }
+.dnd5e2 .mes-skill-name { width: 100%; margin-bottom: 0.3rem; font-size: 1.05rem; font-weight: 700; }
+.dnd5e2 .mes-icon-button { align-self: flex-start; flex: 0 0 2rem; width: 2rem; min-height: 1.75rem; margin: 0; color: var(--color-level-error, #9f2222); }
+.dnd5e2 .mes-stars { display: flex; align-items: center; gap: 0.16rem; color: color-mix(in srgb, currentColor 45%, transparent); }
+.dnd5e2 .mes-star { flex: 0 0 auto; width: auto; min-height: auto; margin: 0; padding: 0.08rem; border: 0; background: transparent; color: inherit; font-size: 1rem; line-height: 1; box-shadow: none; }
+.dnd5e2 button.mes-star:hover { color: #d4a72c; text-shadow: 0 0 5px rgba(212, 167, 44, 0.65); box-shadow: none; }
+.dnd5e2 .mes-star.filled { color: #d4a72c; filter: drop-shadow(0 1px 1px rgba(60, 35, 0, 0.7)); }
+.dnd5e2 .mes-mastery-number { margin-left: 0.35rem; font-size: 0.68rem; font-weight: 700; opacity: 0.65; }
+.dnd5e2 .mes-skill-progress-block { padding: 0.75rem; }
+.dnd5e2 .mes-progress-label { display: flex; justify-content: space-between; margin-bottom: 0.3rem; font-size: 0.7rem; text-transform: uppercase; }
+.dnd5e2 .mes-skill-progress { position: relative; height: 1.25rem; overflow: hidden; border: 1px solid color-mix(in srgb, currentColor 24%, transparent); border-radius: 999px; background: rgba(0, 0, 0, 0.22); }
+.dnd5e2 .mes-skill-progress > span { display: block; width: min(var(--mes-progress), 100%); height: 100%; background: linear-gradient(90deg, #72509a, #d4a72c); transition: width 180ms ease; }
+.dnd5e2 .mes-skill-progress > b { position: absolute; inset: 0; display: grid; place-items: center; color: white; font-size: 0.68rem; line-height: 1; text-shadow: 0 1px 2px black; }
+.dnd5e2 .mes-delta-row { display: flex; align-items: flex-end; gap: 0.5rem; margin-top: 0.65rem; }
+.dnd5e2 .mes-delta-row label { flex: 1; }
+.dnd5e2 .mes-delta-row label > span { display: block; margin-bottom: 0.2rem; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; }
+.dnd5e2 .mes-delta-row input { text-align: center; }
+.dnd5e2 .mes-delta-row button { flex: 0 0 auto; width: auto; min-height: 2rem; margin: 0; white-space: nowrap; }
+.dnd5e2 .mes-description { border-top: 1px solid color-mix(in srgb, currentColor 14%, transparent); }
+.dnd5e2 .mes-description summary { padding: 0.55rem 0.75rem; cursor: pointer; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; user-select: none; }
+.dnd5e2 .mes-description summary:hover { background: color-mix(in srgb, #d4a72c 8%, transparent); }
+.dnd5e2 .mes-description textarea { display: block; width: calc(100% - 1.5rem); min-height: 6rem; margin: 0.65rem 0.75rem 0.75rem; resize: vertical; }
+.dnd5e2 .mes-description p { margin: 0; padding: 0.65rem 0.75rem 0.75rem; white-space: pre-wrap; }
+.dnd5e2 .mes-muted { font-style: italic; opacity: 0.58; }
+.dnd5e2 .mes-skill-card > .mes-help { margin: 0; padding: 0.45rem 0.75rem; border-top: 1px solid rgba(212, 167, 44, 0.3); color: #d4a72c; }
+.dnd5e2 .mes-empty { padding: 3rem 1rem; text-align: center; opacity: 0.65; }
+.dnd5e2 .mes-empty i { font-size: 2rem; }
+
+@media (max-width: 600px) {
+  .dnd5e2 .mes-field-row { align-items: stretch; flex-direction: column; }
+  .dnd5e2 .mes-field-row > label { width: 100%; }
+  .dnd5e2 .mes-spectrum-row { grid-template-columns: 1fr 4.5rem; }
+  .dnd5e2 .mes-spectrum-name { grid-column: 1 / -1; }
+  .dnd5e2 .mes-spectrum-accordion .mes-spectrum-row { grid-template-columns: 1fr 4rem; }
+  .dnd5e2 .mes-spectrum-progress-block { grid-column: 1 / -1; }
+  .dnd5e2 .mes-skill-header { align-items: flex-start; }
+}

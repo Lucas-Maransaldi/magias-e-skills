@@ -1,0 +1,65 @@
+<section class="tab mes-tab mes-magic-tab {{tab.cssClass}}" data-tab="{{tab.id}}" data-group="{{tab.group}}" data-mes-magic>
+  <header class="mes-heading">
+    <h2>{{localize "MES.Magic.Title"}}</h2>
+  </header>
+
+  <label class="mes-search-bar">
+    <i class="fa-solid fa-magnifying-glass" inert></i>
+    <input type="search" data-mes-search-magic placeholder="{{localize 'MES.Magic.SearchPlaceholder'}}"
+           aria-label="{{localize 'MES.Magic.SearchPlaceholder'}}">
+  </label>
+
+  <p class="mes-filter-empty" data-mes-search-empty hidden>{{localize "MES.Common.NoSearchResults"}}</p>
+
+  <div class="mes-spectrum-groups">
+    {{#each magicSpectrumGroups}}
+    <details class="mes-spectrum-accordion mes-spectrum-{{color}}" data-mes-spectrum-group="{{id}}" {{#if open}}open{{/if}}>
+      <summary>
+        <span>{{localize label}}</span>
+        <i class="fa-solid fa-chevron-down" inert></i>
+      </summary>
+
+      <div class="mes-spectrum-list">
+        {{#each entries}}
+        <article class="mes-spectrum-row" data-mes-spectrum-id="{{id}}">
+          <div class="mes-spectrum-name">
+            <strong>{{localize label}}</strong>
+            {{#if complete}}<i class="fa-solid fa-crown" data-tooltip="{{localize 'MES.Common.MaximumReached'}}"></i>{{/if}}
+          </div>
+
+          <div class="mes-circle-display" data-tooltip="{{localize 'MES.Magic.Circle'}}">
+            <strong>{{circle}}</strong>
+            <span>×</span>
+            <img src="modules/magias-e-skills/assets/pentagram.svg" alt="" inert>
+          </div>
+
+          <div class="mes-spectrum-progress-block">
+            <div class="mes-progress-label">
+              <span>{{localize "MES.Common.Progress"}}</span>
+              <strong>{{progress}}%</strong>
+            </div>
+            <div class="mes-skill-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{progress}}">
+              <span style="--mes-progress: {{progress}}%"></span>
+              <b>{{progress}}%</b>
+            </div>
+
+            {{#if @root.editable}}
+            <div class="mes-delta-row mes-spectrum-delta-row">
+              <label>
+                <span>{{localize "MES.Magic.ProgressAdjustment"}}</span>
+                <input type="text" inputmode="numeric" data-mes-progress-delta placeholder="+3 / -5"
+                       aria-label="{{localize 'MES.Magic.ProgressAdjustment'}}">
+              </label>
+              <button type="button" data-mes-apply-delta>
+                <i class="fa-solid fa-check" inert></i> {{localize "MES.Skills.Apply"}}
+              </button>
+            </div>
+            {{/if}}
+          </div>
+        </article>
+        {{/each}}
+      </div>
+    </details>
+    {{/each}}
+  </div>
+</section>

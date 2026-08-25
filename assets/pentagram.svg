@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Pentagrama">
+  <circle cx="50" cy="50" r="45" fill="none" stroke="#a86cdb" stroke-width="7"/>
+  <path d="M50 8 L75 85 L10 38 L90 38 L25 85 Z" fill="none" stroke="#a86cdb" stroke-width="7" stroke-linejoin="round"/>
+</svg>

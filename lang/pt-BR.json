@@ -1,0 +1,206 @@
+{
+  "MES": {
+    "Tabs": {
+      "MagicSpectrum": "Espectros Mágicos",
+      "ExtraSkills": "Extra Skills"
+    },
+    "Common": {
+      "Progress": "Progresso",
+      "MaximumReached": "Nível máximo alcançado.",
+      "NoSearchResults": "Nenhum resultado encontrado."
+    },
+    "Magic": {
+      "Kicker": "Conhecimento arcano",
+      "Title": "Espectros Mágicos",
+      "Circle": "Círculo",
+      "Intro": "Cada conhecimento possui círculo e progresso independentes. Ao completar 100%, ele avança automaticamente para o próximo círculo.",
+      "ProgressAdjustment": "Ajustar progresso arcano",
+      "SearchPlaceholder": "Buscar conhecimento ou espectro..."
+    },
+    "Skills": {
+      "Kicker": "Conhecimentos adicionais",
+      "Title": "Extra Skills",
+      "NewPlaceholder": "Nome da nova skill",
+      "Add": "Adicionar",
+      "Name": "Nome da skill",
+      "Mastery": "Maestria",
+      "Delete": "Excluir skill",
+      "Empty": "Nenhuma Extra Skill cadastrada.",
+      "SelectIcon": "Selecionar ícone",
+      "MasteryValue": "Maestria {mastery} de 6",
+      "SetMastery": "Definir maestria como {mastery}",
+      "ProgressAdjustment": "Ajustar progresso",
+      "Apply": "Aplicar",
+      "Description": "Descrição",
+      "DescriptionPlaceholder": "Descreva esta Extra Skill...",
+      "NoDescription": "Nenhuma descrição informada."
+      ,"SearchPlaceholder": "Buscar Extra Skill..."
+    },
+    "Notifications": {
+      "NameRequired": "Informe um nome para a Extra Skill.",
+      "InvalidProgressDelta": "Informe um ajuste inteiro, como +3 ou -5."
+    },
+    "Delete": {
+      "Title": "Excluir Extra Skill",
+      "Content": "Deseja excluir {name}?"
+    },
+    "Controls": {
+      "LevelDown": "Diminuir um nível",
+      "LevelUp": "Subir um nível",
+      "RemoveProgress": "Remover 10% de progresso",
+      "AddProgress": "Adicionar 10% de progresso",
+      "RemoveOneProgress": "Remover 1% de progresso",
+      "AddOneProgress": "Adicionar 1% de progresso"
+    },
+    "Spectra": {
+      "Afflict": "Afligir",
+      "afflict": {
+        "body": "Corpo",
+        "movement": "Movimento",
+        "senses": "Sentidos",
+        "magical": "Mágicos",
+        "fear": "Medo",
+        "elemental": "Elemental"
+      },
+      "Damage": "Dano",
+      "damage": {
+        "complete": "Completo",
+        "segmented": "Segmentado",
+        "slashing": "Cortante",
+        "piercing": "Perfurante",
+        "bludgeoning": "Contundente",
+        "fire": "Fogo",
+        "cold": "Frio",
+        "lightning": "Elétrico",
+        "acid": "Ácido",
+        "poison": "Veneno",
+        "positiveForce": "Força Positiva",
+        "negativeForce": "Força Negativa",
+        "sonic": "Sônico",
+        "radiant": "Radiante",
+        "necrotic": "Necrótico",
+        "psychic": "Psíquico"
+      },
+      "Attack": "Ataque",
+      "attack": {
+        "melee": "Corpo a Corpo",
+        "ranged": "A Distância"
+      },
+      "Save": "Salvaguarda",
+      "save": {
+        "strength": "Força",
+        "dexterity": "Destreza",
+        "constitution": "Constituição",
+        "intelligence": "Inteligência",
+        "reasoning": "Raciocínio",
+        "wisdom": "Sabedoria",
+        "charisma": "Carisma",
+        "manipulation": "Manipulação",
+        "appearance": "Aparência"
+      },
+      "Range": "Alcance",
+      "range": {
+        "self": "Pessoal",
+        "touch": "Toque",
+        "near": "Perto — 9 m",
+        "medium": "Médio — 30 m",
+        "long": "Longo — 120 m",
+        "unlimited": "Ilimitado"
+      },
+      "Area": "Área",
+      "area": {
+        "target": "Alvo",
+        "cone": "Cone",
+        "cylinder": "Cilindro",
+        "sphere": "Esfera",
+        "line": "Linha"
+      },
+      "CastingTime": "Tempo de Conjuração",
+      "castingTime": {
+        "action": "Ação",
+        "bonusAction": "Ação Bônus",
+        "reaction": "Reação",
+        "ceremony": "Cerimônia ou Ritual"
+      },
+      "Duration": "Duração",
+      "duration": {
+        "instantaneous": "Instantâneo",
+        "round": "Rodada",
+        "minute": "Minuto",
+        "hour": "Hora",
+        "day": "Dia",
+        "concentration": "Concentração",
+        "perpetual": "Perpétuo"
+      },
+      "Red": "Espectro Vermelho",
+      "red": {
+        "explosion": "Explosão",
+        "emanate": "Emanar",
+        "spread": "Espalhar"
+      },
+      "Orange": "Espectro Laranja",
+      "orange": {
+        "nullify": "Anular",
+        "repel": "Repelir",
+        "amplify": "Amplificar",
+        "identify": "Identificar",
+        "connect": "Conectar"
+      },
+      "Yellow": "Espectro Amarelo",
+      "yellow": {
+        "time": "Tempo",
+        "future": "Futuro",
+        "present": "Presente",
+        "past": "Passado",
+        "fast": "Rápido",
+        "stop": "Parar",
+        "slow": "Devagar"
+      },
+      "Green": "Espectro Verde",
+      "green": {
+        "protect": "Proteger",
+        "barrier": "Barreira",
+        "resistance": "Resistência",
+        "increase": "Aumentar",
+        "reduce": "Reduzir",
+        "alter": "Alterar",
+        "bind": "Prender",
+        "repair": "Consertar",
+        "field": "Campo",
+        "animals": "Animais",
+        "plants": "Plantas"
+      },
+      "Blue": "Espectro Azul",
+      "blue": {
+        "thought": "Pensamento",
+        "memory": "Lembrança",
+        "control": "Controle",
+        "dream": "Sonho",
+        "perception": "Percepção",
+        "language": "Linguagem",
+        "senses": "Sentidos"
+      },
+      "Indigo": "Espectro Índigo",
+      "indigo": {
+        "portal": "Portal",
+        "banish": "Banir",
+        "conjure": "Conjurar",
+        "gravity": "Gravidade",
+        "teleport": "Teleporte",
+        "sound": "Som",
+        "weather": "Clima"
+      },
+      "Violet": "Espectro Violeta",
+      "violet": {
+        "wound": "Ferida",
+        "healing": "Cura",
+        "restore": "Restaurar",
+        "damage": "Danificar",
+        "body": "Corpo",
+        "soul": "Alma",
+        "undead": "Morto-Vivo",
+        "curse": "Maldição"
+      }
+    }
+  }
+}
