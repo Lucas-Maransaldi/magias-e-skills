@@ -1,0 +1,51 @@
+<section class="tab mes-tab mes-traits-tab {{tab.cssClass}}" data-tab="{{tab.id}}" data-group="{{tab.group}}">
+  <header class="mes-heading">
+    <h2>{{localize "MES.Traits.Title"}}</h2>
+  </header>
+
+  <p class="mes-traits-help"><i class="fa-solid fa-circle-info" inert></i> {{localize "MES.Traits.DropHint"}}</p>
+
+  <div class="mes-trait-groups">
+    {{#each traitGroups}}
+    <details class="mes-trait-accordion mes-trait-{{color}}" data-mes-trait-group="{{id}}" {{#if open}}open{{/if}}>
+      <summary>
+        <span><i class="{{icon}}" inert></i> {{localize label}}</span>
+        <span class="mes-trait-summary-actions">
+          <small>{{features.length}}</small>
+          {{#if @root.editable}}
+          <button type="button" data-mes-add-feature data-tooltip="{{localize 'MES.Traits.AddFeature'}}"
+                  aria-label="{{localize 'MES.Traits.AddFeature'}}">
+            <i class="fa-solid fa-plus" inert></i>
+          </button>
+          {{/if}}
+          <i class="fa-solid fa-chevron-down mes-trait-chevron" inert></i>
+        </span>
+      </summary>
+
+      <div class="mes-trait-feature-list">
+        {{#each features}}
+        <article class="mes-trait-feature" data-mes-feature-id="{{id}}" draggable="true">
+          <img src="{{img}}" alt="">
+          <button type="button" class="mes-trait-feature-name" data-mes-open-feature>{{name}}</button>
+          <button type="button" class="mes-trait-feature-chat" data-mes-chat-feature
+                  data-tooltip="{{localize 'MES.Traits.ShowInChat'}}" aria-label="{{localize 'MES.Traits.ShowInChat'}}">
+            <i class="fa-solid fa-comment" inert></i>
+          </button>
+          {{#if @root.editable}}
+          <button type="button" class="mes-trait-feature-delete" data-mes-delete-feature
+                  data-tooltip="{{localize 'MES.Traits.DeleteFeature'}}" aria-label="{{localize 'MES.Traits.DeleteFeature'}}">
+            <i class="fa-solid fa-trash" inert></i>
+          </button>
+          {{/if}}
+        </article>
+        {{else}}
+        <div class="mes-trait-empty">
+          <i class="fa-solid fa-arrow-down" inert></i>
+          <span>{{localize "MES.Traits.Empty"}}</span>
+        </div>
+        {{/each}}
+      </div>
+    </details>
+    {{/each}}
+  </div>
+</section>

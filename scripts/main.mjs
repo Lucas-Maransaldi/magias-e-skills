@@ -2,8 +2,18 @@ const MODULE_ID = "magias-e-skills";
 const MAGIC_FLAG = "magicSpectrum";
 const SKILLS_FLAG = "extraSkills";
 const WEAPONS_FLAG = "weaponMasteries";
+const TRAIT_CATEGORY_FLAG = "traitCategory";
+const REPUTATION_FLAG = "reputation";
 const MAX_CIRCLE = 13;
 const MAX_MASTERY = 6;
+
+const TRAIT_GROUPS = [
+  { id: "natures", label: "MES.Traits.Groups.Natures", icon: "fa-solid fa-leaf", color: "nature" },
+  { id: "specializations", label: "MES.Traits.Groups.Specializations", icon: "fa-solid fa-bullseye", color: "specialization" },
+  { id: "backgrounds", label: "MES.Traits.Groups.Backgrounds", icon: "fa-solid fa-scroll", color: "background" },
+  { id: "bonuses", label: "MES.Traits.Groups.Bonuses", icon: "fa-solid fa-circle-plus", color: "bonus" },
+  { id: "burdens", label: "MES.Traits.Groups.Burdens", icon: "fa-solid fa-circle-minus", color: "burden" }
+];
 
 const MAGIC_SPECTRA = [
   group("red", "MES.Spectra.Red", ["explosion", "emanate", "spread", "breath"], "red"),
@@ -66,11 +76,23 @@ Hooks.once("init", () => {
     template: `modules/${MODULE_ID}/templates/weapons.hbs`,
     scrollable: [""]
   };
+  CharacterSheet.PARTS.traits = {
+    container: { classes: ["tab-body"], id: "tabs" },
+    template: `modules/${MODULE_ID}/templates/traits.hbs`,
+    scrollable: [""]
+  };
+  CharacterSheet.PARTS.reputation = {
+    container: { classes: ["tab-body"], id: "tabs" },
+    template: `modules/${MODULE_ID}/templates/reputation.hbs`,
+    scrollable: [""]
+  };
 
   CharacterSheet.TABS.push(
     { tab: "magicSpectrum", label: "MES.Tabs.MagicSpectrum", icon: "fa-solid fa-wand-sparkles" },
     { tab: "extraSkills", label: "MES.Tabs.ExtraSkills", icon: "fa-solid fa-graduation-cap" },
-    { tab: "weapons", label: "MES.Tabs.Weapons", icon: "fa-solid fa-swords" }
+    { tab: "weapons", label: "MES.Tabs.Weapons", icon: "fa-solid fa-swords" },
+    { tab: "traits", label: "MES.Tabs.Traits", icon: "fa-solid fa-list-check" },
+    { tab: "reputation", label: "MES.Tabs.Reputation", icon: "fa-solid fa-ranking-star" }
   );
 
   console.info(`${MODULE_ID} | Inicializado para Foundry VTT 13 e D&D5e 5.2.4.`);
@@ -133,6 +155,33 @@ Hooks.on("dnd5e.prepareSheetContext", (sheet, partId, context) => {
   if ( partId === "weapons" ) {
     const stored = sheet.actor.getFlag(MODULE_ID, WEAPONS_FLAG) ?? [];
     context.weapons = stored.map(prepareMasteryEntry);
+  }
+
+  if ( partId === "traits" ) {
+    sheet._mesOpenTraitGroups ??= new Set(TRAIT_GROUPS.map(group => group.id));
+    context.traitGroups = TRAIT_GROUPS.map(group => ({
+      ...group,
+      open: sheet._mesOpenTraitGroups?.has(group.id) ?? false,
+      features: sheet.actor.items
+        .filter(item => (item.type === "feat") && (item.getFlag(MODULE_ID, TRAIT_CATEGORY_FLAG) === group.id))
+        .sort((left, right) => left.name.localeCompare(right.name, game.i18n.lang))
+        .map(item => ({ id: item.id, name: item.name, img: item.img, uuid: item.uuid }))
+    }));
+  }
+
+  if ( partId === "reputation" ) {
+    const stored = sheet.actor.getFlag(MODULE_ID, REPUTATION_FLAG) ?? {};
+    sheet._mesOpenReputationGroups ??= new Set(["academy", "reputations"]);
+    context.reputation = {
+      credit: Math.trunc(numberValue(stored.credit)),
+      academyOpen: sheet._mesOpenReputationGroups.has("academy"),
+      reputationsOpen: sheet._mesOpenReputationGroups.has("reputations"),
+      entries: (stored.entries ?? []).map(entry => ({
+        id: entry.id,
+        name: entry.name,
+        value: Math.trunc(numberValue(entry.value))
+      }))
+    };
   }
 });
 
@@ -242,7 +291,193 @@ Hooks.on("renderActorSheetV2", (sheet, element) => {
 
   setupMasteryCollection(sheet.actor, element.querySelector('[data-tab="extraSkills"]'), SKILLS_FLAG, "MES.Delete.Title");
   setupMasteryCollection(sheet.actor, element.querySelector('[data-tab="weapons"]'), WEAPONS_FLAG, "MES.Weapons.DeleteTitle");
+  setupTraits(sheet, element.querySelector('[data-tab="traits"]'));
+  setupReputation(sheet, element.querySelector('[data-tab="reputation"]'));
 });
+
+function setupReputation(sheet, tab) {
+  if ( !tab ) return;
+  sheet._mesOpenReputationGroups ??= new Set(["academy", "reputations"]);
+  for ( const group of tab.querySelectorAll("[data-mes-reputation-group]") ) {
+    group.addEventListener("toggle", () => {
+      const id = group.dataset.mesReputationGroup;
+      if ( group.open ) sheet._mesOpenReputationGroups.add(id);
+      else sheet._mesOpenReputationGroups.delete(id);
+    });
+  }
+
+  tab.addEventListener("change", event => {
+    const field = event.target.dataset.mesReputationField;
+    if ( !field ) return;
+    event.stopPropagation();
+    saveReputation(sheet.actor, event.target.closest("[data-mes-reputation-id]")?.dataset.mesReputationId, field, event.target.value);
+  });
+
+  const addButton = tab.querySelector("[data-mes-add-reputation]");
+  const newInput = tab.querySelector("[data-mes-new-reputation]");
+  newInput?.addEventListener("change", event => event.stopPropagation());
+  addButton?.addEventListener("pointerdown", event => event.preventDefault());
+  addButton?.addEventListener("click", () => addReputation(sheet.actor, tab));
+  newInput?.addEventListener("keydown", event => {
+    if ( event.key !== "Enter" ) return;
+    event.preventDefault();
+    addReputation(sheet.actor, tab);
+  });
+
+  for ( const button of tab.querySelectorAll("[data-mes-delete-reputation]") ) {
+    button.addEventListener("click", () => {
+      const row = button.closest("[data-mes-reputation-id]");
+      deleteReputation(sheet.actor, row?.dataset.mesReputationId);
+    });
+  }
+}
+
+async function saveReputation(actor, id, field, value) {
+  if ( !actor.isOwner ) return;
+  const stored = foundry.utils.deepClone(actor.getFlag(MODULE_ID, REPUTATION_FLAG) ?? {});
+  stored.entries ??= [];
+  if ( field === "credit" ) stored.credit = Math.trunc(numberValue(value));
+  else {
+    const entry = stored.entries.find(entry => entry.id === id);
+    if ( !entry ) return;
+    if ( field === "name" ) entry.name = String(value).trim();
+    else if ( field === "value" ) entry.value = Math.trunc(numberValue(value));
+    else return;
+  }
+  await actor.setFlag(MODULE_ID, REPUTATION_FLAG, stored);
+}
+
+async function addReputation(actor, tab) {
+  if ( !actor.isOwner ) return;
+  const input = tab.querySelector("[data-mes-new-reputation]");
+  const name = input?.value.trim();
+  if ( !name ) {
+    ui.notifications.warn(game.i18n.localize("MES.Notifications.ReputationNameRequired"));
+    input?.focus();
+    return;
+  }
+  const stored = foundry.utils.deepClone(actor.getFlag(MODULE_ID, REPUTATION_FLAG) ?? {});
+  stored.entries ??= [];
+  stored.entries.push({ id: foundry.utils.randomID(), name, value: 0 });
+  await actor.setFlag(MODULE_ID, REPUTATION_FLAG, stored);
+}
+
+async function deleteReputation(actor, id) {
+  if ( !actor.isOwner || !id ) return;
+  const stored = foundry.utils.deepClone(actor.getFlag(MODULE_ID, REPUTATION_FLAG) ?? {});
+  const entry = (stored.entries ?? []).find(entry => entry.id === id);
+  if ( !entry ) return;
+  const confirmed = await foundry.applications.api.DialogV2.confirm({
+    window: { title: game.i18n.localize("MES.Reputation.DeleteTitle") },
+    content: `<p>${game.i18n.format("MES.Reputation.DeleteContent", { name: foundry.utils.escapeHTML(entry.name) })}</p>`,
+    modal: true
+  });
+  if ( confirmed ) {
+    stored.entries = stored.entries.filter(entry => entry.id !== id);
+    await actor.setFlag(MODULE_ID, REPUTATION_FLAG, stored);
+  }
+}
+
+function setupTraits(sheet, tab) {
+  if ( !tab ) return;
+  sheet._mesOpenTraitGroups ??= new Set();
+
+  for ( const group of tab.querySelectorAll("[data-mes-trait-group]") ) {
+    const category = group.dataset.mesTraitGroup;
+    group.addEventListener("toggle", () => {
+      if ( group.open ) sheet._mesOpenTraitGroups.add(category);
+      else sheet._mesOpenTraitGroups.delete(category);
+    });
+
+    group.querySelector("[data-mes-add-feature]")?.addEventListener("click", event => {
+      event.preventDefault();
+      event.stopPropagation();
+      createTraitFeature(sheet.actor, category);
+    });
+
+    group.addEventListener("dragover", event => {
+      event.preventDefault();
+      if ( event.dataTransfer ) event.dataTransfer.dropEffect = "copy";
+      group.classList.add("mes-drop-active");
+    });
+    group.addEventListener("dragleave", event => {
+      if ( !group.contains(event.relatedTarget) ) group.classList.remove("mes-drop-active");
+    });
+    group.addEventListener("drop", event => {
+      event.preventDefault();
+      event.stopPropagation();
+      group.classList.remove("mes-drop-active");
+      dropTraitFeature(sheet.actor, category, event);
+    });
+  }
+
+  for ( const feature of tab.querySelectorAll("[data-mes-feature-id]") ) {
+    feature.addEventListener("dragstart", event => {
+      const item = sheet.actor.items.get(feature.dataset.mesFeatureId);
+      if ( !item || !event.dataTransfer ) return;
+      event.dataTransfer.setData("text/plain", JSON.stringify({ type: "Item", uuid: item.uuid }));
+    });
+    feature.querySelector("[data-mes-open-feature]")?.addEventListener("click", () => {
+      sheet.actor.items.get(feature.dataset.mesFeatureId)?.sheet.render({ force: true });
+    });
+    feature.querySelector("[data-mes-chat-feature]")?.addEventListener("click", () => {
+      sheet.actor.items.get(feature.dataset.mesFeatureId)?.displayCard();
+    });
+    feature.querySelector("[data-mes-delete-feature]")?.addEventListener("click", () => {
+      deleteTraitFeature(sheet.actor, feature.dataset.mesFeatureId);
+    });
+  }
+}
+
+async function createTraitFeature(actor, category) {
+  if ( !actor.isOwner ) return;
+  const [item] = await actor.createEmbeddedDocuments("Item", [{
+    name: game.i18n.localize("MES.Traits.NewFeature"),
+    type: "feat",
+    img: "icons/svg/book.svg",
+    flags: { [MODULE_ID]: { [TRAIT_CATEGORY_FLAG]: category } }
+  }]);
+  item?.sheet.render({ force: true });
+}
+
+async function dropTraitFeature(actor, category, event) {
+  if ( !actor.isOwner ) return;
+  const data = TextEditor.getDragEventData(event);
+  let item;
+  try {
+    item = await Item.implementation.fromDropData(data);
+  }
+  catch ( error ) {
+    console.warn(`${MODULE_ID} | Falha ao interpretar Feature arrastada.`, error);
+    return;
+  }
+  if ( !item || item.type !== "feat" ) {
+    ui.notifications.warn(game.i18n.localize("MES.Traits.FeatureOnly"));
+    return;
+  }
+
+  if ( item.parent?.uuid === actor.uuid ) {
+    await item.setFlag(MODULE_ID, TRAIT_CATEGORY_FLAG, category);
+    return;
+  }
+
+  const source = item.toObject();
+  delete source._id;
+  foundry.utils.setProperty(source, `flags.${MODULE_ID}.${TRAIT_CATEGORY_FLAG}`, category);
+  await actor.createEmbeddedDocuments("Item", [source]);
+}
+
+async function deleteTraitFeature(actor, id) {
+  if ( !actor.isOwner ) return;
+  const item = actor.items.get(id);
+  if ( !item ) return;
+  const confirmed = await foundry.applications.api.DialogV2.confirm({
+    window: { title: game.i18n.localize("MES.Traits.DeleteTitle") },
+    content: `<p>${game.i18n.format("MES.Traits.DeleteContent", { name: foundry.utils.escapeHTML(item.name) })}</p>`,
+    modal: true
+  });
+  if ( confirmed ) await item.delete();
+}
 
 function resetMagicViewAfterApply(sheet, magicTab, entryId) {
   sheet._mesMagicSearch = "";

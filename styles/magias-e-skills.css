@@ -125,6 +125,56 @@
 .dnd5e2 .mes-skill-card > .mes-help { margin: 0; padding: 0.45rem 0.75rem; border-top: 1px solid rgba(212, 167, 44, 0.3); color: #d4a72c; }
 .dnd5e2 .mes-empty { padding: 3rem 1rem; text-align: center; opacity: 0.65; }
 .dnd5e2 .mes-empty i { font-size: 2rem; }
+.dnd5e2 .mes-traits-help { margin: 0 0 0.8rem; font-size: 0.75rem; opacity: 0.72; }
+.dnd5e2 .mes-trait-groups { display: grid; gap: 0.65rem; }
+.dnd5e2 .mes-trait-accordion { --mes-trait-color: #72509a; overflow: hidden; border: 1px solid color-mix(in srgb, var(--mes-trait-color) 55%, currentColor 15%); border-left: 4px solid var(--mes-trait-color); border-radius: 6px; background: color-mix(in srgb, var(--mes-trait-color) 5%, transparent); transition: border-color 150ms ease, box-shadow 150ms ease; }
+.dnd5e2 .mes-trait-nature { --mes-trait-color: #4f7a55; }
+.dnd5e2 .mes-trait-specialization { --mes-trait-color: #6c7077; }
+.dnd5e2 .mes-trait-background { --mes-trait-color: #a98f63; }
+.dnd5e2 .mes-trait-bonus { --mes-trait-color: #2f8a4c; }
+.dnd5e2 .mes-trait-burden { --mes-trait-color: #a63b3b; }
+.dnd5e2 .mes-trait-accordion > summary { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.75rem; cursor: pointer; background: color-mix(in srgb, var(--mes-trait-color) 18%, transparent); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; list-style: none; user-select: none; }
+.dnd5e2 .mes-trait-accordion > summary::-webkit-details-marker { display: none; }
+.dnd5e2 .mes-trait-accordion > summary > span:first-child { display: flex; align-items: center; gap: 0.45rem; }
+.dnd5e2 .mes-trait-summary-actions { display: flex; align-items: center; gap: 0.45rem; }
+.dnd5e2 .mes-trait-summary-actions small { min-width: 1.4rem; padding: 0.1rem 0.35rem; border-radius: 999px; background: rgba(0, 0, 0, 0.2); text-align: center; }
+.dnd5e2 .mes-trait-summary-actions button { display: grid; place-items: center; width: 1.65rem; height: 1.65rem; min-height: 1.65rem; margin: 0; padding: 0; border-radius: 50%; color: #d4a72c; }
+.dnd5e2 .mes-trait-chevron { transition: transform 160ms ease; }
+.dnd5e2 .mes-trait-accordion[open] .mes-trait-chevron { transform: rotate(180deg); }
+.dnd5e2 .mes-trait-feature-list { display: grid; gap: 0.35rem; min-height: 3.2rem; padding: 0.5rem; }
+.dnd5e2 .mes-trait-feature { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr) 2rem 2rem; align-items: center; gap: 0.5rem; min-height: 2.6rem; padding: 0.25rem; border: 1px solid color-mix(in srgb, currentColor 14%, transparent); border-radius: 4px; background: rgba(0, 0, 0, 0.08); cursor: grab; }
+.dnd5e2 .mes-trait-feature:not(:has(.mes-trait-feature-delete)) { grid-template-columns: 2.4rem minmax(0, 1fr) 2rem; }
+.dnd5e2 .mes-trait-feature:active { cursor: grabbing; }
+.dnd5e2 .mes-trait-feature img { width: 2.4rem; height: 2.4rem; border: 0; border-radius: 4px; object-fit: cover; }
+.dnd5e2 .mes-trait-feature-name { justify-content: flex-start; width: 100%; min-width: 0; margin: 0; padding: 0.25rem; overflow: hidden; border: 0; background: transparent; font-weight: 700; text-align: left; text-overflow: ellipsis; white-space: nowrap; box-shadow: none; }
+.dnd5e2 .mes-trait-feature-chat { width: 2rem; height: 2rem; min-height: 2rem; margin: 0; padding: 0; border-color: color-mix(in srgb, var(--mes-trait-color) 65%, transparent); color: var(--mes-trait-color); }
+.dnd5e2 .mes-trait-feature-chat:hover { border-color: var(--mes-trait-color); box-shadow: 0 0 6px color-mix(in srgb, var(--mes-trait-color) 55%, transparent); }
+.dnd5e2 .mes-trait-feature-delete { width: 2rem; height: 2rem; min-height: 2rem; margin: 0; padding: 0; color: var(--color-level-error, #9f2222); }
+.dnd5e2 .mes-trait-empty { display: flex; align-items: center; justify-content: center; gap: 0.45rem; min-height: 2.5rem; border: 1px dashed color-mix(in srgb, currentColor 25%, transparent); border-radius: 4px; font-size: 0.75rem; opacity: 0.65; }
+.dnd5e2 .mes-trait-accordion.mes-drop-active { border-color: var(--mes-trait-color); box-shadow: 0 0 10px color-mix(in srgb, var(--mes-trait-color) 75%, transparent); }
+.dnd5e2 .mes-trait-accordion.mes-drop-active > summary { background: color-mix(in srgb, var(--mes-trait-color) 35%, transparent); }
+.dnd5e2 .mes-reputation-groups { display: grid; gap: 0.7rem; }
+.dnd5e2 .mes-reputation-accordion { --mes-reputation-color: #826f50; overflow: hidden; border: 1px solid color-mix(in srgb, var(--mes-reputation-color) 55%, currentColor 14%); border-left: 4px solid var(--mes-reputation-color); border-radius: 6px; background: color-mix(in srgb, var(--mes-reputation-color) 5%, transparent); }
+.dnd5e2 .mes-reputation-institutions { --mes-reputation-color: #72509a; }
+.dnd5e2 .mes-reputation-accordion > summary { display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 0.8rem; cursor: pointer; background: color-mix(in srgb, var(--mes-reputation-color) 18%, transparent); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; list-style: none; user-select: none; }
+.dnd5e2 .mes-reputation-accordion > summary::-webkit-details-marker { display: none; }
+.dnd5e2 .mes-reputation-accordion > summary span { display: flex; align-items: center; gap: 0.45rem; }
+.dnd5e2 .mes-reputation-accordion > summary > i { transition: transform 160ms ease; }
+.dnd5e2 .mes-reputation-accordion[open] > summary > i { transform: rotate(180deg); }
+.dnd5e2 .mes-reputation-list { display: grid; gap: 0.45rem; padding: 0.55rem; }
+.dnd5e2 .mes-reputation-row { display: grid; grid-template-columns: minmax(0, 1fr) 7rem; align-items: center; gap: 0.55rem; min-height: 3rem; padding: 0.45rem 0.55rem; border: 1px solid color-mix(in srgb, currentColor 14%, transparent); border-radius: 5px; background: rgba(0, 0, 0, 0.08); }
+.dnd5e2 .mes-reputation-row-editable { grid-template-columns: minmax(0, 1fr) 7rem 2rem; align-items: end; padding: 0.7rem 0.55rem 0.5rem; }
+.dnd5e2 .mes-reputation-academy .mes-reputation-row { grid-template-columns: minmax(0, 1fr) 7rem; }
+.dnd5e2 .mes-reputation-identity { display: flex; align-items: center; gap: 0.5rem; }
+.dnd5e2 .mes-reputation-row-editable .mes-reputation-identity { align-self: end; min-height: 2rem; }
+.dnd5e2 .mes-reputation-identity > i { color: #d4a72c; font-size: 1.15rem; }
+.dnd5e2 .mes-reputation-name { align-self: end; box-sizing: border-box; width: 100%; min-width: 0; height: 2rem; min-height: 2rem; margin: 0; font-weight: 700; }
+.dnd5e2 .mes-reputation-value > span { display: block; margin-bottom: 0.3rem; font-size: 0.62rem; font-weight: 700; line-height: 1; text-align: center; text-transform: uppercase; opacity: 0.7; }
+.dnd5e2 .mes-reputation-value input { box-sizing: border-box; width: 100%; height: 2rem; min-height: 2rem; margin: 0; text-align: center; }
+.dnd5e2 .mes-reputation-readonly-value { text-align: center; font-size: 1.15rem; }
+.dnd5e2 .mes-reputation-delete { width: 2rem; height: 2rem; min-height: 2rem; margin: 0; padding: 0; color: var(--color-level-error, #9f2222); }
+.dnd5e2 .mes-reputation-add-row { margin: 0 0 0.25rem; }
+.dnd5e2 .mes-reputation-empty { padding: 1.5rem 0.75rem; text-align: center; opacity: 0.65; }
 
 @media (max-width: 600px) {
   .dnd5e2 .mes-field-row { align-items: stretch; flex-direction: column; }
@@ -134,4 +184,7 @@
   .dnd5e2 .mes-spectrum-accordion .mes-spectrum-row { grid-template-columns: 1fr 4rem; }
   .dnd5e2 .mes-spectrum-progress-block { grid-column: 1 / -1; }
   .dnd5e2 .mes-skill-header { align-items: flex-start; }
+  .dnd5e2 .mes-reputation-row { grid-template-columns: minmax(0, 1fr) 5rem; }
+  .dnd5e2 .mes-reputation-row-editable { grid-template-columns: minmax(0, 1fr) 5rem 2rem; }
+  .dnd5e2 .mes-reputation-academy .mes-reputation-row { grid-template-columns: minmax(0, 1fr) 5rem; }
 }

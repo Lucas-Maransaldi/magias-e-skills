@@ -3,7 +3,9 @@
     "Tabs": {
       "MagicSpectrum": "Espectros Mágicos",
       "ExtraSkills": "Extra Skills",
-      "Weapons": "Armas"
+      "Weapons": "Armas",
+      "Traits": "Traits",
+      "Reputation": "Reputação"
     },
     "Common": {
       "Progress": "Progresso",
@@ -49,9 +51,44 @@
       "DescriptionPlaceholder": "Descreva esta arma...",
       "Empty": "Nenhuma maestria de arma cadastrada."
     },
+    "Traits": {
+      "Title": "Traits",
+      "DropHint": "Arraste Features de compêndios ou da ficha para uma categoria.",
+      "AddFeature": "Adicionar Feature",
+      "NewFeature": "Nova Feature",
+      "FeatureOnly": "Apenas Features podem ser adicionadas a esta categoria.",
+      "Empty": "Nenhuma Feature. Arraste uma aqui ou use o botão +.",
+      "DeleteFeature": "Excluir Feature",
+      "ShowInChat": "Mostrar no chat",
+      "DeleteTitle": "Excluir Feature",
+      "DeleteContent": "Deseja excluir {name}?",
+      "Groups": {
+        "Natures": "Naturezas",
+        "Specializations": "Especializações",
+        "Backgrounds": "Antecedentes",
+        "Bonuses": "Bônus",
+        "Burdens": "Ônus"
+      }
+    },
+    "Reputation": {
+      "Title": "Reputação",
+      "Academy": "Academia",
+      "Credit": "Crédito",
+      "Value": "Valor",
+      "Reputations": "Reputação",
+      "Level": "Nível",
+      "Name": "Nome da instituição",
+      "NewPlaceholder": "Nome da instituição",
+      "Add": "Adicionar",
+      "Delete": "Excluir reputação",
+      "DeleteTitle": "Excluir reputação",
+      "DeleteContent": "Deseja excluir a reputação com {name}?",
+      "Empty": "Nenhuma reputação cadastrada."
+    },
     "Notifications": {
       "NameRequired": "Informe um nome para a Extra Skill.",
       "WeaponNameRequired": "Informe um nome para a arma.",
+      "ReputationNameRequired": "Informe o nome da instituição.",
       "InvalidProgressDelta": "Informe um ajuste inteiro, como +3, -5 ou 10%."
     },
     "Delete": {

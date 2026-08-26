@@ -1,0 +1,69 @@
+<section class="tab mes-tab mes-reputation-tab {{tab.cssClass}}" data-tab="{{tab.id}}" data-group="{{tab.group}}">
+  <header class="mes-heading">
+    <h2>{{localize "MES.Reputation.Title"}}</h2>
+  </header>
+
+  <div class="mes-reputation-groups">
+    <details class="mes-reputation-accordion mes-reputation-academy" data-mes-reputation-group="academy" {{#if reputation.academyOpen}}open{{/if}}>
+      <summary>
+        <span><i class="fa-solid fa-building-columns" inert></i> {{localize "MES.Reputation.Academy"}}</span>
+        <i class="fa-solid fa-chevron-down" inert></i>
+      </summary>
+      <div class="mes-reputation-list">
+        <article class="mes-reputation-row {{#if editable}}mes-reputation-row-editable{{/if}}">
+          <div class="mes-reputation-identity">
+            <i class="fa-solid fa-coins" inert></i>
+            <strong>{{localize "MES.Reputation.Credit"}}</strong>
+          </div>
+          {{#if editable}}
+          <label class="mes-reputation-value">
+            <span>{{localize "MES.Reputation.Value"}}</span>
+            <input type="number" step="1" value="{{reputation.credit}}" data-mes-reputation-field="credit">
+          </label>
+          {{else}}
+          <strong class="mes-reputation-readonly-value">{{reputation.credit}}</strong>
+          {{/if}}
+        </article>
+      </div>
+    </details>
+
+    <details class="mes-reputation-accordion mes-reputation-institutions" data-mes-reputation-group="reputations" {{#if reputation.reputationsOpen}}open{{/if}}>
+      <summary>
+        <span><i class="fa-solid fa-ranking-star" inert></i> {{localize "MES.Reputation.Reputations"}}</span>
+        <i class="fa-solid fa-chevron-down" inert></i>
+      </summary>
+      <div class="mes-reputation-list">
+        {{#if editable}}
+        <div class="mes-add-row mes-reputation-add-row">
+          <input type="text" data-mes-new-reputation placeholder="{{localize 'MES.Reputation.NewPlaceholder'}}">
+          <button type="button" data-mes-add-reputation>
+            <i class="fa-solid fa-plus" inert></i> {{localize "MES.Reputation.Add"}}
+          </button>
+        </div>
+        {{/if}}
+
+        {{#each reputation.entries}}
+        <article class="mes-reputation-row {{#if @root.editable}}mes-reputation-row-editable{{/if}}" data-mes-reputation-id="{{id}}">
+          {{#if @root.editable}}
+          <input class="mes-reputation-name" type="text" value="{{name}}" data-mes-reputation-field="name"
+                 aria-label="{{localize 'MES.Reputation.Name'}}">
+          <label class="mes-reputation-value">
+            <span>{{localize "MES.Reputation.Level"}}</span>
+            <input type="number" step="1" value="{{value}}" data-mes-reputation-field="value">
+          </label>
+          <button type="button" class="mes-reputation-delete" data-mes-delete-reputation
+                  data-tooltip="{{localize 'MES.Reputation.Delete'}}" aria-label="{{localize 'MES.Reputation.Delete'}}">
+            <i class="fa-solid fa-trash" inert></i>
+          </button>
+          {{else}}
+          <strong>{{name}}</strong>
+          <strong class="mes-reputation-readonly-value">{{value}}</strong>
+          {{/if}}
+        </article>
+        {{else}}
+        <div class="mes-reputation-empty"><i class="fa-solid fa-ranking-star" inert></i> {{localize "MES.Reputation.Empty"}}</div>
+        {{/each}}
+      </div>
+    </details>
+  </div>
+</section>
