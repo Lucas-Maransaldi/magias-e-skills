@@ -85,11 +85,15 @@ Hooks.on("dnd5e.prepareSheetContext", (sheet, partId, context) => {
     context.magicSpectrumGroups = MAGIC_SPECTRA.map(spectrumGroup => ({
       ...spectrumGroup,
       open: sheet._mesOpenSpectrumGroups?.has(spectrumGroup.id) ?? false,
-      entries: (spectrumGroup.entries ?? []).map(entry => prepareSpectrumEntry(entries, entry)),
+      entries: (spectrumGroup.entries ?? [])
+        .map(entry => prepareSpectrumEntry(entries, entry))
+        .sort(compareSpectrumEntries),
       categories: spectrumGroup.categories?.map(category => ({
         ...category,
         open: sheet._mesOpenAfflictCategories?.has(category.id) ?? false,
-        entries: category.entries.map(entry => prepareSpectrumEntry(entries, entry))
+        entries: category.entries
+          .map(entry => prepareSpectrumEntry(entries, entry))
+          .sort(compareSpectrumEntries)
       }))
     }));
 
@@ -168,7 +172,16 @@ Hooks.on("renderActorSheetV2", (sheet, element) => {
       else sheet._mesOpenAfflictCategories.delete(category.dataset.mesAfflictCategory);
     });
   }
-  magicTab?.addEventListener("change", event => saveMagic(sheet.actor, event));
+  magicTab?.addEventListener("change", event => {
+    if ( event.target.matches("[data-mes-progress-delta]") ) {
+      event.stopPropagation();
+      return;
+    }
+    saveMagic(sheet.actor, event);
+  });
+  for ( const button of magicTab?.querySelectorAll("[data-mes-apply-delta]") ?? [] ) {
+    button.addEventListener("pointerdown", event => event.preventDefault());
+  }
   magicTab?.addEventListener("click", event => {
     const deltaButton = event.target.closest("[data-mes-apply-delta]");
     const deltaRow = deltaButton?.closest("[data-mes-spectrum-id]");
@@ -198,6 +211,8 @@ function setupMasteryCollection(actor, tab, flag, deleteTitle) {
   const newSkillInput = tab.querySelector("[data-mes-new-skill]");
   const skillSearch = tab.querySelector("[data-mes-search-skills]");
   skillSearch?.addEventListener("input", () => filterExtraSkills(tab, skillSearch.value));
+  newSkillInput?.addEventListener("change", event => event.stopPropagation());
+  addButton?.addEventListener("pointerdown", event => event.preventDefault());
   addButton?.addEventListener("click", () => addSkill(actor, tab, flag));
   newSkillInput?.addEventListener("keydown", event => {
     if ( event.key !== "Enter" ) return;
@@ -206,7 +221,14 @@ function setupMasteryCollection(actor, tab, flag, deleteTitle) {
   });
 
   for ( const row of tab.querySelectorAll("[data-mes-skill-id]") ) {
-    row.addEventListener("change", event => saveSkill(actor, row.dataset.mesSkillId, event, flag));
+    row.addEventListener("change", event => {
+      if ( event.target.matches("[data-mes-progress-delta]") ) {
+        event.stopPropagation();
+        return;
+      }
+      saveSkill(actor, row.dataset.mesSkillId, event, flag);
+    });
+    row.querySelector("[data-mes-apply-delta]")?.addEventListener("pointerdown", event => event.preventDefault());
     row.addEventListener("click", event => {
       const deleteButton = event.target.closest("[data-mes-delete-skill]");
       if ( deleteButton ) return deleteSkill(actor, row.dataset.mesSkillId, flag, deleteTitle);
@@ -270,13 +292,14 @@ async function applyMagicProgressDelta(actor, id, row) {
   if ( !actor.isOwner ) return;
   const input = row.querySelector("[data-mes-progress-delta]");
   const raw = input?.value.trim() ?? "";
-  if ( !/^[+-]?\d+$/.test(raw) ) {
+  const delta = parseProgressDelta(raw);
+  if ( delta === null ) {
     ui.notifications.warn(game.i18n.localize("MES.Notifications.InvalidProgressDelta"));
     input?.focus();
     return;
   }
 
-  await adjustMagic(actor, id, { dataset: { mesAdjust: "progress", mesDelta: raw } });
+  await adjustMagic(actor, id, { dataset: { mesAdjust: "progress", mesDelta: delta } });
 }
 
 async function addSkill(actor, element, flag = SKILLS_FLAG) {
@@ -337,13 +360,14 @@ async function applySkillProgressDelta(actor, id, row, flag = SKILLS_FLAG) {
   if ( !actor.isOwner ) return;
   const input = row.querySelector("[data-mes-progress-delta]");
   const raw = input?.value.trim() ?? "";
-  if ( !/^[+-]?\d+$/.test(raw) ) {
+  const delta = parseProgressDelta(raw);
+  if ( delta === null ) {
     ui.notifications.warn(game.i18n.localize("MES.Notifications.InvalidProgressDelta"));
     input?.focus();
     return;
   }
 
-  await adjustSkill(actor, id, { dataset: { mesAdjust: "progress", mesDelta: raw } }, flag);
+  await adjustSkill(actor, id, { dataset: { mesAdjust: "progress", mesDelta: delta } }, flag);
 }
 
 async function pickSkillIcon(actor, id, flag = SKILLS_FLAG) {
@@ -415,6 +439,15 @@ function normalizeProgress(level, progress, maximum) {
 function numberValue(value) {
   const number = Number(value);
   return Number.isFinite(number) ? number : 0;
+}
+
+function compareSpectrumEntries(left, right) {
+  return (right.circle - left.circle) || (right.progress - left.progress);
+}
+
+function parseProgressDelta(value) {
+  const normalized = String(value ?? "").replace(/\s*%\s*$/, "").trim();
+  return /^[+-]?\d+$/.test(normalized) ? normalized : null;
 }
 
 function filterMagicSpectra(tab, search) {

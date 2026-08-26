@@ -52,7 +52,7 @@
     "Notifications": {
       "NameRequired": "Informe um nome para a Extra Skill.",
       "WeaponNameRequired": "Informe um nome para a arma.",
-      "InvalidProgressDelta": "Informe um ajuste inteiro, como +3 ou -5."
+      "InvalidProgressDelta": "Informe um ajuste inteiro, como +3, -5 ou 10%."
     },
     "Delete": {
       "Title": "Excluir Extra Skill",
