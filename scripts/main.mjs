@@ -112,7 +112,7 @@ Hooks.on("dnd5e.prepareSheetContext", (sheet, partId, context) => {
   if ( partId === "extraSkills" ) {
     const stored = sheet.actor.getFlag(MODULE_ID, SKILLS_FLAG) ?? [];
     context.extraSkills = stored.map(skill => {
-      const value = normalizeProgress(skill.mastery, skill.progress, MAX_MASTERY);
+      const value = normalizeProgress(skill.mastery, skill.progress, MAX_MASTERY, false);
       return {
         id: skill.id,
         name: skill.name,
@@ -125,7 +125,7 @@ Hooks.on("dnd5e.prepareSheetContext", (sheet, partId, context) => {
           filled: index < value.level
         })),
         maximum: MAX_MASTERY,
-        complete: value.level === MAX_MASTERY && value.progress === 100
+        complete: value.level === MAX_MASTERY
       };
     });
   }
@@ -137,7 +137,7 @@ Hooks.on("dnd5e.prepareSheetContext", (sheet, partId, context) => {
 });
 
 function prepareMasteryEntry(entry) {
-  const value = normalizeProgress(entry.mastery, entry.progress, MAX_MASTERY);
+  const value = normalizeProgress(entry.mastery, entry.progress, MAX_MASTERY, false);
   return {
     id: entry.id,
     name: entry.name,
@@ -147,7 +147,7 @@ function prepareMasteryEntry(entry) {
     progress: value.progress,
     stars: Array.from({ length: MAX_MASTERY }, (_, index) => ({ value: index + 1, filled: index < value.level })),
     maximum: MAX_MASTERY,
-    complete: value.level === MAX_MASTERY && value.progress === 100
+    complete: value.level === MAX_MASTERY
   };
 }
 
@@ -197,7 +197,7 @@ Hooks.on("renderActorSheetV2", (sheet, element) => {
     if ( deltaButton && deltaRow ) {
       const deltaValue = deltaRow.querySelector("[data-mes-progress-delta]")?.value;
       if ( parseProgressDelta(deltaValue) !== null ) {
-        sheet._mesMagicDeltaDrafts.delete(deltaRow.dataset.mesSpectrumId);
+        resetMagicViewAfterApply(sheet, magicTab, deltaRow.dataset.mesSpectrumId);
       }
       return applyMagicProgressDelta(sheet.actor, deltaRow.dataset.mesSpectrumId, deltaRow);
     }
@@ -225,7 +225,7 @@ Hooks.on("renderActorSheetV2", (sheet, element) => {
     deltaInput.addEventListener("keydown", event => {
       if ( event.key !== "Enter" ) return;
       event.preventDefault();
-      if ( parseProgressDelta(deltaInput.value) !== null ) sheet._mesMagicDeltaDrafts.delete(entryId);
+      if ( parseProgressDelta(deltaInput.value) !== null ) resetMagicViewAfterApply(sheet, magicTab, entryId);
       applyMagicProgressDelta(sheet.actor, row.dataset.mesSpectrumId, row);
     });
   }
@@ -243,6 +243,22 @@ Hooks.on("renderActorSheetV2", (sheet, element) => {
   setupMasteryCollection(sheet.actor, element.querySelector('[data-tab="extraSkills"]'), SKILLS_FLAG, "MES.Delete.Title");
   setupMasteryCollection(sheet.actor, element.querySelector('[data-tab="weapons"]'), WEAPONS_FLAG, "MES.Weapons.DeleteTitle");
 });
+
+function resetMagicViewAfterApply(sheet, magicTab, entryId) {
+  sheet._mesMagicSearch = "";
+  sheet._mesMagicDeltaDrafts.delete(entryId);
+  sheet._mesFocusedMagicDelta = null;
+  sheet._mesOpenSpectrumGroups.clear();
+  sheet._mesOpenAfflictCategories.clear();
+
+  const search = magicTab?.querySelector("[data-mes-search-magic]");
+  if ( search ) search.value = "";
+  if ( magicTab ) filterMagicSpectra(magicTab, "");
+  for ( const accordion of magicTab?.querySelectorAll("[data-mes-spectrum-group], [data-mes-afflict-category]") ?? [] ) {
+    accordion.open = false;
+    delete accordion.dataset.mesOpenBeforeSearch;
+  }
+}
 
 function setupMasteryCollection(actor, tab, flag, deleteTitle) {
   if ( !tab ) return;
@@ -377,7 +393,7 @@ async function saveSkill(actor, id, event, flag = SKILLS_FLAG) {
 
   if ( ["name", "icon", "description"].includes(field) ) skill[field] = event.target.value.trim();
   else skill[field] = numberValue(event.target.value);
-  const normalized = normalizeProgress(skill.mastery, skill.progress, MAX_MASTERY);
+  const normalized = normalizeProgress(skill.mastery, skill.progress, MAX_MASTERY, false);
   skill.mastery = normalized.level;
   skill.progress = normalized.progress;
   await actor.setFlag(MODULE_ID, flag, skills);
@@ -392,6 +408,7 @@ async function setSkillMastery(actor, id, mastery, flag = SKILLS_FLAG) {
   const selected = Math.clamp(Math.trunc(numberValue(mastery)), 1, MAX_MASTERY);
   skill.mastery = numberValue(skill.mastery) === selected ? selected - 1 : selected;
   if ( skill.mastery < MAX_MASTERY ) skill.progress = Math.min(numberValue(skill.progress), 99);
+  else skill.progress = 0;
   await actor.setFlag(MODULE_ID, flag, skills);
 }
 
@@ -441,7 +458,7 @@ async function adjustSkill(actor, id, button, flag = SKILLS_FLAG) {
   else if ( field === "progress" ) skill.progress = numberValue(skill.progress) + delta;
   else return;
 
-  const normalized = normalizeProgress(skill.mastery, skill.progress, MAX_MASTERY);
+  const normalized = normalizeProgress(skill.mastery, skill.progress, MAX_MASTERY, false);
   skill.mastery = normalized.level;
   skill.progress = normalized.progress;
   await actor.setFlag(MODULE_ID, flag, skills);

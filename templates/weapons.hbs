@@ -62,11 +62,18 @@
       </header>
 
       <div class="mes-skill-progress-block">
-        <div class="mes-progress-label"><span>{{localize "MES.Common.Progress"}}</span><strong>{{progress}}%</strong></div>
+        <div class="mes-progress-label"><span>{{localize "MES.Common.Progress"}}</span><strong>{{#if complete}}MAX{{else}}{{progress}}%{{/if}}</strong></div>
+        {{#if complete}}
+        <div class="mes-skill-progress mes-progress-maximum" role="progressbar" aria-label="MAX" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+          <span></span><b>MAX</b>
+        </div>
+        {{else}}
         <div class="mes-skill-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{progress}}">
           <span style="--mes-progress: {{progress}}%"></span><b>{{progress}}%</b>
         </div>
+        {{/if}}
         {{#if @root.editable}}
+        {{#unless complete}}
         <div class="mes-delta-row">
           <label>
             <span>{{localize "MES.Skills.ProgressAdjustment"}}</span>
@@ -75,6 +82,7 @@
           </label>
           <button type="button" data-mes-apply-delta><i class="fa-solid fa-check" inert></i> {{localize "MES.Skills.Apply"}}</button>
         </div>
+        {{/unless}}
         {{/if}}
       </div>
 
