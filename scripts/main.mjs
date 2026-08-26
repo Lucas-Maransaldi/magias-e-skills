@@ -99,12 +99,12 @@ Hooks.on("dnd5e.prepareSheetContext", (sheet, partId, context) => {
 
     function prepareSpectrumEntry(storedEntries, entry) {
       const storedEntry = getSpectrumEntry(storedEntries, entry.id);
-      const magic = normalizeProgress(storedEntry?.circle, storedEntry?.progress, MAX_CIRCLE);
+      const magic = normalizeProgress(storedEntry?.circle, storedEntry?.progress, MAX_CIRCLE, false);
       return {
         ...entry,
         circle: magic.level,
         progress: magic.progress,
-        complete: magic.level === MAX_CIRCLE && magic.progress === 100
+        complete: magic.level === MAX_CIRCLE
       };
     }
   }
@@ -156,7 +156,16 @@ Hooks.on("renderActorSheetV2", (sheet, element) => {
 
   const magicTab = element.querySelector("[data-mes-magic]");
   const magicSearch = magicTab?.querySelector("[data-mes-search-magic]");
-  magicSearch?.addEventListener("input", () => filterMagicSpectra(magicTab, magicSearch.value));
+  sheet._mesMagicSearch ??= "";
+  sheet._mesMagicDeltaDrafts ??= new Map();
+  if ( magicSearch ) {
+    magicSearch.value = sheet._mesMagicSearch;
+    filterMagicSpectra(magicTab, magicSearch.value);
+    magicSearch.addEventListener("input", () => {
+      sheet._mesMagicSearch = magicSearch.value;
+      filterMagicSpectra(magicTab, magicSearch.value);
+    });
+  }
   sheet._mesOpenSpectrumGroups ??= new Set();
   sheet._mesOpenAfflictCategories ??= new Set();
   for ( const accordion of magicTab?.querySelectorAll("[data-mes-spectrum-group]") ?? [] ) {
@@ -186,6 +195,10 @@ Hooks.on("renderActorSheetV2", (sheet, element) => {
     const deltaButton = event.target.closest("[data-mes-apply-delta]");
     const deltaRow = deltaButton?.closest("[data-mes-spectrum-id]");
     if ( deltaButton && deltaRow ) {
+      const deltaValue = deltaRow.querySelector("[data-mes-progress-delta]")?.value;
+      if ( parseProgressDelta(deltaValue) !== null ) {
+        sheet._mesMagicDeltaDrafts.delete(deltaRow.dataset.mesSpectrumId);
+      }
       return applyMagicProgressDelta(sheet.actor, deltaRow.dataset.mesSpectrumId, deltaRow);
     }
 
@@ -194,10 +207,36 @@ Hooks.on("renderActorSheetV2", (sheet, element) => {
     if ( button && row ) adjustMagic(sheet.actor, row.dataset.mesSpectrumId, button);
   });
   for ( const row of magicTab?.querySelectorAll("[data-mes-spectrum-id]") ?? [] ) {
-    row.querySelector("[data-mes-progress-delta]")?.addEventListener("keydown", event => {
+    const deltaInput = row.querySelector("[data-mes-progress-delta]");
+    if ( !deltaInput ) continue;
+    const entryId = row.dataset.mesSpectrumId;
+    deltaInput.value = sheet._mesMagicDeltaDrafts.get(entryId) ?? "";
+    deltaInput.addEventListener("input", event => {
+      event.stopPropagation();
+      sheet._mesMagicDeltaDrafts.set(entryId, deltaInput.value);
+      sheet._mesFocusedMagicDelta = entryId;
+    });
+    deltaInput.addEventListener("focus", () => {
+      sheet._mesFocusedMagicDelta = entryId;
+    });
+    deltaInput.addEventListener("focusout", event => {
+      if ( event.relatedTarget ) sheet._mesFocusedMagicDelta = null;
+    });
+    deltaInput.addEventListener("keydown", event => {
       if ( event.key !== "Enter" ) return;
       event.preventDefault();
+      if ( parseProgressDelta(deltaInput.value) !== null ) sheet._mesMagicDeltaDrafts.delete(entryId);
       applyMagicProgressDelta(sheet.actor, row.dataset.mesSpectrumId, row);
+    });
+  }
+
+  if ( sheet._mesFocusedMagicDelta && magicTab?.classList.contains("active") ) {
+    const focusedRow = [...magicTab.querySelectorAll("[data-mes-spectrum-id]")]
+      .find(row => row.dataset.mesSpectrumId === sheet._mesFocusedMagicDelta);
+    const focusedInput = focusedRow?.querySelector("[data-mes-progress-delta]");
+    requestAnimationFrame(() => {
+      focusedInput?.focus();
+      focusedInput?.setSelectionRange(focusedInput.value.length, focusedInput.value.length);
     });
   }
 
@@ -264,7 +303,7 @@ async function saveMagic(actor, event) {
   current.entries ??= {};
   const entry = getSpectrumEntry(current.entries, id) ?? { circle: 0, progress: 0 };
   const next = { ...entry, [field]: numberValue(event.target.value) };
-  const normalized = normalizeProgress(next.circle, next.progress, MAX_CIRCLE);
+  const normalized = normalizeProgress(next.circle, next.progress, MAX_CIRCLE, false);
   current.entries[spectrumStorageKey(id)] = { circle: normalized.level, progress: normalized.progress };
   await actor.setFlag(MODULE_ID, MAGIC_FLAG, current);
 }
@@ -283,7 +322,7 @@ async function adjustMagic(actor, id, button) {
   else if ( field === "progress" ) entry.progress = numberValue(entry.progress) + delta;
   else return;
 
-  const normalized = normalizeProgress(entry.circle, entry.progress, MAX_CIRCLE);
+  const normalized = normalizeProgress(entry.circle, entry.progress, MAX_CIRCLE, false);
   current.entries[spectrumStorageKey(id)] = { circle: normalized.level, progress: normalized.progress };
   await actor.setFlag(MODULE_ID, MAGIC_FLAG, current);
 }
@@ -422,13 +461,15 @@ async function deleteSkill(actor, id, flag = SKILLS_FLAG, deleteTitle = "MES.Del
   if ( confirmed ) await actor.setFlag(MODULE_ID, flag, skills.filter(entry => entry.id !== id));
 }
 
-function normalizeProgress(level, progress, maximum) {
+function normalizeProgress(level, progress, maximum, allowMaximumProgress = true) {
   level = Math.clamp(Math.trunc(numberValue(level)), 0, maximum);
   progress = Math.trunc(numberValue(progress));
 
-  const maximumTotal = (maximum + 1) * 100;
+  const maximumTotal = (maximum * 100) + (allowMaximumProgress ? 100 : 0);
   const total = Math.clamp((level * 100) + progress, 0, maximumTotal);
-  if ( total === maximumTotal ) return { level: maximum, progress: 100 };
+  if ( total === maximumTotal ) {
+    return { level: maximum, progress: allowMaximumProgress ? 100 : 0 };
+  }
 
   level = Math.floor(total / 100);
   progress = total % 100;
