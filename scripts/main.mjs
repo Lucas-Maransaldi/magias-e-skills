@@ -182,8 +182,8 @@ Hooks.on("dnd5e.prepareSheetContext", (sheet, partId, context) => {
       reputationsOpen: sheet._mesOpenReputationGroups.has("reputations"),
       devotion: {
         points: devotionPoints,
-        devote: (devotionPoints >= 100) && (devotionPoints < 200),
-        follower: devotionPoints >= 200,
+        follower: (devotionPoints >= 100) && (devotionPoints < 200),
+        devote: devotionPoints >= 200,
         feature: devotionFeature && {
           id: devotionFeature.id,
           name: devotionFeature.name,

@@ -64,11 +64,11 @@
           <strong>{{reputation.devotion.points}}</strong>
           {{/if}}
 
-          {{#if reputation.devotion.follower}}
-          <strong class="mes-devotion-rank mes-devotion-follower"><i class="fa-solid fa-star" inert></i> {{localize "MES.Reputation.Follower"}}</strong>
+          {{#if reputation.devotion.devote}}
+          <strong class="mes-devotion-rank mes-devotion-devote"><i class="fa-solid fa-sun" inert></i> {{localize "MES.Reputation.Devote"}}</strong>
           {{else}}
-            {{#if reputation.devotion.devote}}
-            <strong class="mes-devotion-rank mes-devotion-devote"><i class="fa-solid fa-sun" inert></i> {{localize "MES.Reputation.Devote"}}</strong>
+            {{#if reputation.devotion.follower}}
+            <strong class="mes-devotion-rank mes-devotion-follower"><i class="fa-solid fa-star" inert></i> {{localize "MES.Reputation.Follower"}}</strong>
             {{/if}}
           {{/if}}
         </div>
