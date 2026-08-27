@@ -171,11 +171,25 @@ Hooks.on("dnd5e.prepareSheetContext", (sheet, partId, context) => {
 
   if ( partId === "reputation" ) {
     const stored = sheet.actor.getFlag(MODULE_ID, REPUTATION_FLAG) ?? {};
-    sheet._mesOpenReputationGroups ??= new Set(["academy", "reputations"]);
+    sheet._mesOpenReputationGroups ??= new Set(["academy", "devotion", "reputations"]);
+    const devotion = stored.devotion ?? {};
+    const devotionPoints = Math.trunc(numberValue(devotion.points));
+    const devotionFeature = sheet.actor.items.get(devotion.itemId);
     context.reputation = {
       credit: Math.trunc(numberValue(stored.credit)),
       academyOpen: sheet._mesOpenReputationGroups.has("academy"),
+      devotionOpen: sheet._mesOpenReputationGroups.has("devotion"),
       reputationsOpen: sheet._mesOpenReputationGroups.has("reputations"),
+      devotion: {
+        points: devotionPoints,
+        devote: (devotionPoints >= 100) && (devotionPoints < 200),
+        follower: devotionPoints >= 200,
+        feature: devotionFeature && {
+          id: devotionFeature.id,
+          name: devotionFeature.name,
+          img: devotionFeature.img
+        }
+      },
       entries: (stored.entries ?? []).map(entry => ({
         id: entry.id,
         name: entry.name,
@@ -297,7 +311,7 @@ Hooks.on("renderActorSheetV2", (sheet, element) => {
 
 function setupReputation(sheet, tab) {
   if ( !tab ) return;
-  sheet._mesOpenReputationGroups ??= new Set(["academy", "reputations"]);
+  sheet._mesOpenReputationGroups ??= new Set(["academy", "devotion", "reputations"]);
   for ( const group of tab.querySelectorAll("[data-mes-reputation-group]") ) {
     group.addEventListener("toggle", () => {
       const id = group.dataset.mesReputationGroup;
@@ -330,6 +344,72 @@ function setupReputation(sheet, tab) {
       deleteReputation(sheet.actor, row?.dataset.mesReputationId);
     });
   }
+
+  const devotionDrop = tab.querySelector("[data-mes-devotion-drop]");
+  devotionDrop?.addEventListener("dragover", event => {
+    event.preventDefault();
+    if ( event.dataTransfer ) event.dataTransfer.dropEffect = "copy";
+    devotionDrop.classList.add("mes-drop-active");
+  });
+  devotionDrop?.addEventListener("dragleave", event => {
+    if ( !devotionDrop.contains(event.relatedTarget) ) devotionDrop.classList.remove("mes-drop-active");
+  });
+  devotionDrop?.addEventListener("drop", event => {
+    event.preventDefault();
+    event.stopPropagation();
+    devotionDrop.classList.remove("mes-drop-active");
+    dropDevotionFeature(sheet.actor, event);
+  });
+  tab.querySelector("[data-mes-open-devotion]")?.addEventListener("click", () => {
+    const id = actorDevotion(sheet.actor).itemId;
+    sheet.actor.items.get(id)?.sheet.render({ force: true });
+  });
+  tab.querySelector("[data-mes-chat-devotion]")?.addEventListener("click", () => {
+    const id = actorDevotion(sheet.actor).itemId;
+    sheet.actor.items.get(id)?.displayCard();
+  });
+  tab.querySelector("[data-mes-remove-devotion]")?.addEventListener("click", () => removeDevotionFeature(sheet.actor));
+}
+
+function actorDevotion(actor) {
+  return actor.getFlag(MODULE_ID, REPUTATION_FLAG)?.devotion ?? {};
+}
+
+async function dropDevotionFeature(actor, event) {
+  if ( !actor.isOwner ) return;
+  const data = TextEditor.getDragEventData(event);
+  let item;
+  try {
+    item = await Item.implementation.fromDropData(data);
+  }
+  catch ( error ) {
+    console.warn(`${MODULE_ID} | Falha ao interpretar Feature de Devoção.`, error);
+    return;
+  }
+  if ( !item || item.type !== "feat" ) {
+    ui.notifications.warn(game.i18n.localize("MES.Traits.FeatureOnly"));
+    return;
+  }
+
+  let itemId = item.id;
+  if ( item.parent?.uuid !== actor.uuid ) {
+    const source = item.toObject();
+    delete source._id;
+    [item] = await actor.createEmbeddedDocuments("Item", [source]);
+    itemId = item.id;
+  }
+
+  const stored = foundry.utils.deepClone(actor.getFlag(MODULE_ID, REPUTATION_FLAG) ?? {});
+  stored.devotion = { ...(stored.devotion ?? {}), itemId };
+  await actor.setFlag(MODULE_ID, REPUTATION_FLAG, stored);
+}
+
+async function removeDevotionFeature(actor) {
+  if ( !actor.isOwner ) return;
+  const stored = foundry.utils.deepClone(actor.getFlag(MODULE_ID, REPUTATION_FLAG) ?? {});
+  if ( !stored.devotion ) return;
+  delete stored.devotion.itemId;
+  await actor.setFlag(MODULE_ID, REPUTATION_FLAG, stored);
 }
 
 async function saveReputation(actor, id, field, value) {
@@ -337,6 +417,10 @@ async function saveReputation(actor, id, field, value) {
   const stored = foundry.utils.deepClone(actor.getFlag(MODULE_ID, REPUTATION_FLAG) ?? {});
   stored.entries ??= [];
   if ( field === "credit" ) stored.credit = Math.trunc(numberValue(value));
+  else if ( field === "devotion" ) {
+    stored.devotion ??= {};
+    stored.devotion.points = Math.max(0, Math.trunc(numberValue(value)));
+  }
   else {
     const entry = stored.entries.find(entry => entry.id === id);
     if ( !entry ) return;

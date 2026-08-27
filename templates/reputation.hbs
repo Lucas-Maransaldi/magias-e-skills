@@ -27,6 +27,54 @@
       </div>
     </details>
 
+    <details class="mes-reputation-accordion mes-reputation-devotion" data-mes-reputation-group="devotion" {{#if reputation.devotionOpen}}open{{/if}}>
+      <summary>
+        <span><i class="fa-solid fa-hands-praying" inert></i> {{localize "MES.Reputation.Devotion"}}</span>
+        <i class="fa-solid fa-chevron-down" inert></i>
+      </summary>
+      <div class="mes-devotion-content">
+        <div class="mes-devotion-feature {{#unless reputation.devotion.feature}}mes-devotion-empty{{/unless}}" data-mes-devotion-drop>
+          {{#if reputation.devotion.feature}}
+          <img src="{{reputation.devotion.feature.img}}" alt="">
+          <button type="button" class="mes-devotion-name" data-mes-open-devotion>{{reputation.devotion.feature.name}}</button>
+          <button type="button" class="mes-devotion-chat" data-mes-chat-devotion
+                  data-tooltip="{{localize 'MES.Traits.ShowInChat'}}" aria-label="{{localize 'MES.Traits.ShowInChat'}}">
+            <i class="fa-solid fa-comment" inert></i>
+          </button>
+          {{#if editable}}
+          <button type="button" class="mes-devotion-remove" data-mes-remove-devotion
+                  data-tooltip="{{localize 'MES.Reputation.RemoveDevotion'}}" aria-label="{{localize 'MES.Reputation.RemoveDevotion'}}">
+            <i class="fa-solid fa-xmark" inert></i>
+          </button>
+          {{/if}}
+          {{else}}
+          <i class="fa-solid fa-arrow-down" inert></i>
+          <span>{{localize "MES.Reputation.DevotionDropHint"}}</span>
+          {{/if}}
+        </div>
+
+        <div class="mes-devotion-progress">
+          {{#if editable}}
+          <label>
+            <span>{{localize "MES.Reputation.DevotionPoints"}}</span>
+            <input type="number" min="0" step="1" value="{{reputation.devotion.points}}" data-mes-reputation-field="devotion">
+          </label>
+          {{else}}
+          <span>{{localize "MES.Reputation.DevotionPoints"}}</span>
+          <strong>{{reputation.devotion.points}}</strong>
+          {{/if}}
+
+          {{#if reputation.devotion.follower}}
+          <strong class="mes-devotion-rank mes-devotion-follower"><i class="fa-solid fa-star" inert></i> {{localize "MES.Reputation.Follower"}}</strong>
+          {{else}}
+            {{#if reputation.devotion.devote}}
+            <strong class="mes-devotion-rank mes-devotion-devote"><i class="fa-solid fa-sun" inert></i> {{localize "MES.Reputation.Devote"}}</strong>
+            {{/if}}
+          {{/if}}
+        </div>
+      </div>
+    </details>
+
     <details class="mes-reputation-accordion mes-reputation-institutions" data-mes-reputation-group="reputations" {{#if reputation.reputationsOpen}}open{{/if}}>
       <summary>
         <span><i class="fa-solid fa-ranking-star" inert></i> {{localize "MES.Reputation.Reputations"}}</span>
