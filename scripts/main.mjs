@@ -307,7 +307,33 @@ Hooks.on("renderActorSheetV2", (sheet, element) => {
   setupMasteryCollection(sheet.actor, element.querySelector('[data-tab="weapons"]'), WEAPONS_FLAG, "MES.Weapons.DeleteTitle");
   setupTraits(sheet, element.querySelector('[data-tab="traits"]'));
   setupReputation(sheet, element.querySelector('[data-tab="reputation"]'));
+  hideManagedFeatures(sheet.actor, element);
 });
+
+function hideManagedFeatures(actor, element) {
+  const managedIds = new Set(
+    actor.items
+      .filter(item => (item.type === "feat") && Boolean(item.getFlag(MODULE_ID, TRAIT_CATEGORY_FLAG)))
+      .map(item => item.id)
+  );
+  const devotionItemId = actorDevotion(actor).itemId;
+  if ( devotionItemId ) managedIds.add(devotionItemId);
+  if ( !managedIds.size ) return;
+
+  const nativeFeatures = element.querySelector('[data-tab="features"]');
+  if ( !nativeFeatures ) return;
+  for ( const row of nativeFeatures.querySelectorAll("[data-item-id]") ) {
+    if ( managedIds.has(row.dataset.itemId) ) row.hidden = true;
+  }
+
+  for ( const list of nativeFeatures.querySelectorAll(".item-list") ) {
+    const rows = [...list.querySelectorAll(":scope > [data-item-id]")];
+    if ( !rows.length || rows.some(row => !row.hidden) ) continue;
+    list.hidden = true;
+    const header = list.previousElementSibling;
+    if ( header?.classList.contains("items-header") ) header.hidden = true;
+  }
+}
 
 function setupReputation(sheet, tab) {
   if ( !tab ) return;
