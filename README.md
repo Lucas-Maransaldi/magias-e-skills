@@ -1,4 +1,4 @@
-# Magias e Skills
+# Veritas Core Sheet
 
 Módulo para Foundry VTT 13.351 e D&D5e 5.2.4 até 5.3.3.
 
@@ -7,7 +7,7 @@ Módulo para Foundry VTT 13.351 e D&D5e 5.2.4 até 5.3.3.
 No Foundry, abra **Add-on Modules → Install Module** e use este manifesto:
 
 ```text
-https://github.com/Lucas-Maransaldi/magias-e-skills/releases/latest/download/module.json
+https://github.com/Lucas-Maransaldi/veritas-core-sheet/releases/latest/download/module.json
 ```
 
 ## Funcionalidades
@@ -23,8 +23,8 @@ https://github.com/Lucas-Maransaldi/magias-e-skills/releases/latest/download/mod
 - Ícone selecionável, descrição recolhível e maestria representada por seis estrelas.
 - Barra de progresso com ajustes positivos ou negativos digitados pelo usuário.
 - Busca instantânea por nome nas duas abas, abrindo automaticamente os grupos arcanos encontrados.
-- Dados armazenados em flags do ator (`flags.magias-e-skills`), sem alterar o schema do D&D5e.
+- Dados armazenados em flags do ator (`flags.veritas-core-sheet`), sem alterar o schema do D&D5e.
 
 ## Instalação para desenvolvimento
 
-Copie ou vincule esta pasta para `Data/modules/magias-e-skills`, ative o módulo no mundo e recarregue o Foundry.
+Copie ou vincule esta pasta para `Data/modules/veritas-core-sheet`, ative o módulo no mundo e recarregue o Foundry.

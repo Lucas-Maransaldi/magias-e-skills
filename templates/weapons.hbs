@@ -19,6 +19,13 @@
   </div>
   {{/if}}
 
+  {{#if editable}}
+  <div class="mes-feature-drop" data-mes-feature-drop>
+    <i class="fa-solid fa-cloud-arrow-down" inert></i>
+    <span>{{localize "MES.Weapons.DropHint"}}</span>
+  </div>
+  {{/if}}
+
   <div class="mes-skill-list">
     {{#each weapons}}
     <article class="mes-skill-card" data-mes-skill-id="{{id}}">
@@ -53,7 +60,17 @@
           </div>
         </div>
 
+        <button type="button" class="mes-icon-button mes-share-weapon" data-mes-chat-mastery
+                data-tooltip="{{localize 'MES.Weapons.ShowInChat'}}" aria-label="{{localize 'MES.Weapons.ShowInChat'}}">
+          <i class="fa-solid fa-comment" inert></i>
+        </button>
         {{#if @root.editable}}
+        {{#if itemId}}
+        <button type="button" class="mes-icon-button mes-open-feature" data-mes-open-mastery-feature
+                data-tooltip="{{localize 'MES.Weapons.OpenFeature'}}" aria-label="{{localize 'MES.Weapons.OpenFeature'}}">
+          <i class="fa-solid fa-up-right-from-square" inert></i>
+        </button>
+        {{/if}}
         <button type="button" class="mes-icon-button" data-mes-delete-skill
                 data-tooltip="{{localize 'MES.Weapons.Delete'}}" aria-label="{{localize 'MES.Weapons.Delete'}}">
           <i class="fa-solid fa-trash" inert></i>
@@ -91,7 +108,7 @@
         {{#if @root.editable}}
         <textarea rows="5" data-mes-field="description" placeholder="{{localize 'MES.Weapons.DescriptionPlaceholder'}}">{{description}}</textarea>
         {{else}}
-          {{#if description}}<p>{{description}}</p>{{else}}<p class="mes-muted">{{localize "MES.Skills.NoDescription"}}</p>{{/if}}
+          {{#if description}}<div class="mes-feature-description">{{{description}}}</div>{{else}}<p class="mes-muted">{{localize "MES.Skills.NoDescription"}}</p>{{/if}}
         {{/if}}
       </details>
 

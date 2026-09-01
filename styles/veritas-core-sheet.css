@@ -86,6 +86,9 @@
 .dnd5e2 .mes-add-row { margin-bottom: 1rem; }
 .dnd5e2 .mes-add-row input { flex: 1; }
 .dnd5e2 .mes-add-row button { width: auto; white-space: nowrap; }
+.dnd5e2 .mes-feature-drop { display: flex; align-items: center; justify-content: center; gap: 0.55rem; min-height: 4rem; margin-bottom: 1rem; padding: 0.75rem; border: 2px dashed color-mix(in srgb, #d4a72c 48%, currentColor 18%); border-radius: 8px; background: color-mix(in srgb, #d4a72c 5%, transparent); color: color-mix(in srgb, #d4a72c 75%, currentColor); font-size: 0.78rem; text-align: center; transition: border-color 150ms ease, background 150ms ease, box-shadow 150ms ease; }
+.dnd5e2 .mes-feature-drop > i { font-size: 1.2rem; }
+.dnd5e2 .mes-feature-drop.mes-drop-active { border-color: #d4a72c; background: color-mix(in srgb, #d4a72c 14%, transparent); box-shadow: 0 0 10px rgba(212, 167, 44, 0.45); }
 .dnd5e2 .mes-skill-list { display: grid; gap: 0.85rem; }
 .dnd5e2 .mes-skill-card { overflow: hidden; border: 1px solid color-mix(in srgb, currentColor 22%, transparent); border-radius: 8px; background: linear-gradient(135deg, color-mix(in srgb, var(--color-cool-5, #e7e5df) 42%, transparent), color-mix(in srgb, #5e2a84 7%, transparent)); box-shadow: 0 2px 7px rgba(0, 0, 0, 0.16); }
 .dnd5e2 .mes-skill-header { align-items: flex-start; justify-content: flex-start; min-height: 5rem; margin: 0; padding: 0.75rem; border-bottom: 1px solid color-mix(in srgb, currentColor 15%, transparent); }
@@ -96,6 +99,41 @@
 .dnd5e2 .mes-skill-identity h3 { margin: 0 0 0.35rem; overflow: hidden; font-size: 1.12rem; text-overflow: ellipsis; white-space: nowrap; }
 .dnd5e2 .mes-skill-name { box-sizing: border-box; width: 100%; height: 2rem; min-height: 2rem; margin: 0 0 0.3rem; font-size: 1.05rem; font-weight: 700; }
 .dnd5e2 .mes-icon-button { align-self: flex-start; flex: 0 0 2rem; box-sizing: border-box; width: 2rem; height: 2rem; min-height: 2rem; margin: 0; padding: 0; color: var(--color-level-error, #9f2222); }
+.dnd5e2 .mes-icon-button.mes-open-feature { color: #d4a72c; }
+.dnd5e2 .mes-icon-button.mes-share-weapon { color: #72509a; }
+.mes-weapon-chat-card .card-header { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); align-items: center; gap: 0.5rem; min-height: 2.5rem; margin: 0; padding-bottom: 0.2rem; }
+.mes-weapon-chat-card .card-header img { width: 2.5rem; height: 2.5rem; border: 0; object-fit: cover; }
+.mes-weapon-chat-card .mes-chat-heading { min-width: 0; }
+.mes-weapon-chat-card .card-header h3 { margin: 0 0 0.1rem; overflow: hidden; font-size: 1rem; line-height: 1.05; text-overflow: ellipsis; white-space: nowrap; }
+.mes-weapon-chat-card .mes-chat-mastery { display: flex; align-items: center; gap: 0.25rem; min-width: 0; min-height: 1rem; margin: 0; padding: 0; border-top: 1px solid color-mix(in srgb, currentColor 18%, transparent); line-height: 1; }
+.mes-weapon-chat-card .mes-chat-mastery > strong { display: flex; align-items: center; align-self: stretch; margin: 0 auto 0 0; line-height: 1; }
+.mes-weapon-chat-card .mes-chat-stars { display: flex; align-items: center; gap: 0.05rem; color: #d4a72c; font-size: 0.8rem; line-height: 1; }
+.mes-weapon-chat-card .mes-chat-stars i { line-height: 1; }
+.mes-weapon-chat-card .mes-chat-mastery > b { display: flex; align-items: center; align-self: stretch; font-size: 0.75rem; line-height: 1; opacity: 0.75; }
+.mes-weapon-chat-card .mes-chat-description { border-top: 1px solid color-mix(in srgb, currentColor 18%, transparent); }
+.mes-weapon-chat-card .mes-chat-description > summary { display: flex; align-items: center; gap: 0.4rem; padding: 0.55rem 0.15rem; cursor: pointer; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; list-style: none; user-select: none; }
+.mes-weapon-chat-card .mes-chat-description > summary::-webkit-details-marker { display: none; }
+.mes-weapon-chat-card .mes-chat-description > summary i { transition: transform 160ms ease; }
+.mes-weapon-chat-card .mes-chat-description[open] > summary i { transform: rotate(180deg); }
+.mes-weapon-chat-card .card-content { padding: 0.15rem 0.15rem 0.6rem; }
+.mes-weapon-chat-card .card-content > :first-child { margin-top: 0; }
+.mes-weapon-chat-card .card-content > :last-child { margin-bottom: 0; }
+.mes-weapon-chat-card .mes-chat-subfeatures { border-top: 1px solid color-mix(in srgb, currentColor 18%, transparent); }
+.mes-weapon-chat-card .mes-chat-subfeatures > summary { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 0.4rem; padding: 0.55rem 0.15rem; cursor: pointer; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; list-style: none; user-select: none; }
+.mes-weapon-chat-card .mes-chat-subfeatures > summary::-webkit-details-marker,
+.mes-weapon-chat-card .mes-chat-subfeature > summary::-webkit-details-marker { display: none; }
+.mes-weapon-chat-card .mes-chat-subfeatures > summary > span { display: flex; align-items: center; gap: 0.4rem; }
+.mes-weapon-chat-card .mes-chat-subfeatures > summary > small { min-width: 1.3rem; padding: 0.08rem 0.3rem; border-radius: 999px; background: rgba(0, 0, 0, 0.12); text-align: center; }
+.mes-weapon-chat-card .mes-chat-chevron { transition: transform 160ms ease; }
+.mes-weapon-chat-card details[open] > summary > .mes-chat-chevron { transform: rotate(180deg); }
+.mes-weapon-chat-card .mes-chat-subfeature-list { display: grid; gap: 0.3rem; padding: 0.1rem 0.15rem 0.6rem; }
+.mes-weapon-chat-card .mes-chat-subfeature { border: 1px solid color-mix(in srgb, currentColor 16%, transparent); border-radius: 4px; background: rgba(0, 0, 0, 0.04); }
+.mes-weapon-chat-card .mes-chat-subfeature > summary { display: grid; grid-template-columns: 1.8rem minmax(0, 1fr) auto; align-items: center; gap: 0.4rem; padding: 0.25rem; cursor: pointer; list-style: none; }
+.mes-weapon-chat-card .mes-chat-subfeature > summary img { width: 1.8rem; height: 1.8rem; border: 0; border-radius: 3px; object-fit: cover; }
+.mes-weapon-chat-card .mes-chat-subfeature > summary strong { min-width: 0; margin: 0; overflow: hidden; font-size: 0.78rem; text-overflow: ellipsis; white-space: nowrap; }
+.mes-weapon-chat-card .mes-chat-subfeature-description { padding: 0.4rem 0.5rem 0.55rem; border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent); }
+.mes-weapon-chat-card .mes-chat-subfeature-description > :first-child { margin-top: 0; }
+.mes-weapon-chat-card .mes-chat-subfeature-description > :last-child { margin-bottom: 0; }
 .dnd5e2 .mes-stars { display: flex; align-items: center; gap: 0.16rem; color: color-mix(in srgb, currentColor 45%, transparent); }
 .dnd5e2 .mes-star { flex: 0 0 auto; width: auto; min-height: auto; margin: 0; padding: 0.08rem; border: 0; background: transparent; color: inherit; font-size: 1rem; line-height: 1; box-shadow: none; }
 .dnd5e2 button.mes-star:hover { color: #d4a72c; text-shadow: 0 0 5px rgba(212, 167, 44, 0.65); box-shadow: none; }
@@ -121,6 +159,26 @@
 .dnd5e2 .mes-description summary:hover { background: color-mix(in srgb, #d4a72c 8%, transparent); }
 .dnd5e2 .mes-description textarea { display: block; width: calc(100% - 1.5rem); min-height: 6rem; margin: 0.65rem 0.75rem 0.75rem; resize: vertical; }
 .dnd5e2 .mes-description p { margin: 0; padding: 0.65rem 0.75rem 0.75rem; white-space: pre-wrap; }
+.dnd5e2 .mes-description .mes-feature-description { padding: 0.65rem 0.75rem 0.75rem; }
+.dnd5e2 .mes-description .mes-feature-description > :first-child { margin-top: 0; }
+.dnd5e2 .mes-description .mes-feature-description > :last-child { margin-bottom: 0; }
+.dnd5e2 .mes-subfeatures { border-top: 1px solid color-mix(in srgb, currentColor 14%, transparent); }
+.dnd5e2 .mes-subfeatures > summary { display: flex; align-items: center; justify-content: space-between; padding: 0.55rem 0.75rem; cursor: pointer; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; list-style: none; user-select: none; }
+.dnd5e2 .mes-subfeatures > summary::-webkit-details-marker { display: none; }
+.dnd5e2 .mes-subfeatures > summary span { display: flex; align-items: center; gap: 0.4rem; }
+.dnd5e2 .mes-subfeatures > summary small { min-width: 1.35rem; padding: 0.08rem 0.3rem; border-radius: 999px; background: rgba(0, 0, 0, 0.15); text-align: center; }
+.dnd5e2 .mes-subfeature-chevron { transition: transform 160ms ease; }
+.dnd5e2 .mes-subfeatures[open] .mes-subfeature-chevron { transform: rotate(180deg); }
+.dnd5e2 .mes-subfeatures-content { padding: 0 0.75rem 0.75rem; }
+.dnd5e2 .mes-subfeature-list { display: grid; gap: 0.35rem; }
+.dnd5e2 .mes-subfeature-row { display: grid; grid-template-columns: 2.25rem minmax(0, 1fr) 2rem 2rem; align-items: center; gap: 0.4rem; min-height: 2.5rem; padding: 0.2rem; border: 1px solid color-mix(in srgb, currentColor 14%, transparent); border-radius: 4px; background: rgba(0, 0, 0, 0.08); }
+.dnd5e2 .mes-subfeature-row:not(:has(.mes-subfeature-remove)) { grid-template-columns: 2.25rem minmax(0, 1fr) 2rem; }
+.dnd5e2 .mes-subfeature-row img { width: 2.25rem; height: 2.25rem; border: 0; border-radius: 4px; object-fit: cover; }
+.dnd5e2 .mes-subfeature-row button { min-height: 2rem; margin: 0; padding: 0; }
+.dnd5e2 .mes-subfeature-name { justify-content: flex-start; overflow: hidden; border: 0; background: transparent; font-weight: 700; text-align: left; text-overflow: ellipsis; white-space: nowrap; box-shadow: none; }
+.dnd5e2 .mes-subfeature-remove { color: var(--color-level-error, #9f2222); }
+.dnd5e2 .mes-subfeature-drop { display: flex; align-items: center; justify-content: center; gap: 0.4rem; min-height: 2.8rem; margin-top: 0.45rem; border: 1px dashed color-mix(in srgb, #72509a 65%, currentColor); border-radius: 4px; font-size: 0.72rem; opacity: 0.75; transition: opacity 150ms ease, box-shadow 150ms ease; }
+.dnd5e2 .mes-subfeature-drop.mes-drop-active { opacity: 1; box-shadow: 0 0 8px rgba(114, 80, 154, 0.55); }
 .dnd5e2 .mes-muted { font-style: italic; opacity: 0.58; }
 .dnd5e2 .mes-skill-card > .mes-help { margin: 0; padding: 0.45rem 0.75rem; border-top: 1px solid rgba(212, 167, 44, 0.3); color: #d4a72c; }
 .dnd5e2 .mes-empty { padding: 3rem 1rem; text-align: center; opacity: 0.65; }

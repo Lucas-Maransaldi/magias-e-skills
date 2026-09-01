@@ -22,6 +22,13 @@
   </div>
   {{/if}}
 
+  {{#if editable}}
+  <div class="mes-feature-drop" data-mes-feature-drop>
+    <i class="fa-solid fa-cloud-arrow-down" inert></i>
+    <span>{{localize "MES.Skills.DropHint"}}</span>
+  </div>
+  {{/if}}
+
   <div class="mes-skill-list">
     {{#each extraSkills}}
     <article class="mes-skill-card" data-mes-skill-id="{{id}}">
@@ -59,7 +66,17 @@
           </div>
         </div>
 
+        <button type="button" class="mes-icon-button mes-share-weapon" data-mes-chat-mastery
+                data-tooltip="{{localize 'MES.Skills.ShareInChat'}}" aria-label="{{localize 'MES.Skills.ShareInChat'}}">
+          <i class="fa-solid fa-comment" inert></i>
+        </button>
         {{#if @root.editable}}
+        {{#if itemId}}
+        <button type="button" class="mes-icon-button mes-open-feature" data-mes-open-mastery-feature
+                data-tooltip="{{localize 'MES.Skills.OpenFeature'}}" aria-label="{{localize 'MES.Skills.OpenFeature'}}">
+          <i class="fa-solid fa-up-right-from-square" inert></i>
+        </button>
+        {{/if}}
         <button type="button" class="mes-icon-button" data-mes-delete-skill
                 data-tooltip="{{localize 'MES.Skills.Delete'}}" aria-label="{{localize 'MES.Skills.Delete'}}">
           <i class="fa-solid fa-trash" inert></i>
@@ -107,12 +124,45 @@
                   placeholder="{{localize 'MES.Skills.DescriptionPlaceholder'}}">{{description}}</textarea>
         {{else}}
           {{#if description}}
-          <p>{{description}}</p>
+          <div class="mes-feature-description">{{{description}}}</div>
           {{else}}
           <p class="mes-muted">{{localize "MES.Skills.NoDescription"}}</p>
           {{/if}}
         {{/if}}
       </details>
+
+      {{#if allowsSubfeatures}}
+      <details class="mes-subfeatures">
+        <summary>
+          <span><i class="fa-solid fa-layer-group" inert></i> {{localize "MES.Skills.Subfeatures"}} <small>{{subfeatures.length}}</small></span>
+          <i class="fa-solid fa-chevron-down mes-subfeature-chevron" inert></i>
+        </summary>
+        <div class="mes-subfeatures-content">
+        <div class="mes-subfeature-list">
+          {{#each subfeatures}}
+          <article class="mes-subfeature-row" data-mes-subfeature-id="{{id}}">
+            <img src="{{img}}" alt="">
+            <button type="button" class="mes-subfeature-name" data-mes-open-subfeature>{{name}}</button>
+            <button type="button" data-mes-chat-subfeature data-tooltip="{{localize 'MES.Skills.ShowInChat'}}"
+                    aria-label="{{localize 'MES.Skills.ShowInChat'}}"><i class="fa-solid fa-comment" inert></i></button>
+            {{#if @root.editable}}
+            <button type="button" class="mes-subfeature-remove" data-mes-remove-subfeature
+                    data-tooltip="{{localize 'MES.Skills.RemoveSubfeature'}}" aria-label="{{localize 'MES.Skills.RemoveSubfeature'}}">
+              <i class="fa-solid fa-trash" inert></i>
+            </button>
+            {{/if}}
+          </article>
+          {{/each}}
+        </div>
+        {{#if @root.editable}}
+        <div class="mes-subfeature-drop" data-mes-subfeature-drop>
+          <i class="fa-solid fa-cloud-arrow-down" inert></i>
+          <span>{{localize "MES.Skills.SubfeatureDropHint"}}</span>
+        </div>
+        {{/if}}
+        </div>
+      </details>
+      {{/if}}
 
       {{#if complete}}<p class="mes-help"><i class="fa-solid fa-crown" inert></i> {{localize "MES.Common.MaximumReached"}}</p>{{/if}}
     </article>

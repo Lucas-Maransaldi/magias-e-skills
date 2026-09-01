@@ -37,7 +37,18 @@
       "Description": "Descrição",
       "DescriptionPlaceholder": "Descreva esta Extra Skill...",
       "NoDescription": "Nenhuma descrição informada."
-      ,"SearchPlaceholder": "Buscar Extra Skill..."
+      ,"SearchPlaceholder": "Buscar Extra Skill...",
+      "DropHint": "Arraste uma Feature de Extra Skill para cá.",
+      "FeatureOnly": "A Extra Skill deve ser uma Feature.",
+      "AlreadyAdded": "Esta Extra Skill já foi adicionada.",
+      "OpenFeature": "Abrir Feature da Extra Skill",
+      "Subfeatures": "Features vinculadas",
+      "SubfeatureDropHint": "Arraste uma Feature para vincular.",
+      "SubfeatureOnly": "Apenas Features podem ser vinculadas a esta Extra Skill.",
+      "SubfeatureAlreadyAdded": "Esta Feature já está vinculada.",
+      "RemoveSubfeature": "Remover Feature vinculada",
+      "ShowInChat": "Mostrar Feature no chat"
+      ,"ShareInChat": "Enviar Extra Skill para o chat"
     },
     "Weapons": {
       "Kicker": "Treinamento marcial",
@@ -49,6 +60,11 @@
       "Delete": "Excluir arma",
       "DeleteTitle": "Excluir arma",
       "DescriptionPlaceholder": "Descreva esta arma...",
+      "DropHint": "Arraste uma Feature de maestria de arma para cá.",
+      "FeatureOnly": "A maestria de arma deve ser uma Feature.",
+      "AlreadyAdded": "Esta maestria de arma já foi adicionada.",
+      "OpenFeature": "Abrir Feature da maestria",
+      "ShowInChat": "Enviar maestria para o chat",
       "Empty": "Nenhuma maestria de arma cadastrada."
     },
     "Traits": {

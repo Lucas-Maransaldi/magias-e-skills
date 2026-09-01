@@ -1,4 +1,5 @@
-const MODULE_ID = "magias-e-skills";
+const MODULE_ID = "veritas-core-sheet";
+const LEGACY_MODULE_ID = "magias-e-skills";
 const MAGIC_FLAG = "magicSpectrum";
 const SKILLS_FLAG = "extraSkills";
 const WEAPONS_FLAG = "weaponMasteries";
@@ -6,6 +7,7 @@ const TRAIT_CATEGORY_FLAG = "traitCategory";
 const REPUTATION_FLAG = "reputation";
 const MAX_CIRCLE = 13;
 const MAX_MASTERY = 6;
+const MULTI_FEATURE_SKILLS = new Set(["encantamento", "encantamentos", "encantameto", "cozinha"]);
 
 const TRAIT_GROUPS = [
   { id: "natures", label: "MES.Traits.Groups.Natures", icon: "fa-solid fa-leaf", color: "nature" },
@@ -98,6 +100,30 @@ Hooks.once("init", () => {
   console.info(`${MODULE_ID} | Inicializado para Foundry VTT 13 e D&D5e 5.2.4.`);
 });
 
+Hooks.once("ready", async () => {
+  if ( !game.user.isGM ) return;
+  let migrated = 0;
+  for ( const actor of game.actors ) {
+    const legacyActorFlags = actor.flags?.[LEGACY_MODULE_ID];
+    if ( legacyActorFlags && !actor.flags?.[MODULE_ID] ) {
+      for ( const [key, value] of Object.entries(legacyActorFlags) ) {
+        await actor.setFlag(MODULE_ID, key, foundry.utils.deepClone(value));
+      }
+      migrated += 1;
+    }
+    for ( const item of actor.items ) {
+      const legacyItemFlags = item.flags?.[LEGACY_MODULE_ID];
+      if ( !legacyItemFlags || item.flags?.[MODULE_ID] ) continue;
+      for ( const [key, value] of Object.entries(legacyItemFlags) ) {
+        await item.setFlag(MODULE_ID, key, foundry.utils.deepClone(value));
+      }
+    }
+  }
+  if ( migrated ) {
+    console.info(`${MODULE_ID} | Dados de ${migrated} personagem(ns) migrados do módulo ${LEGACY_MODULE_ID}.`);
+  }
+});
+
 Hooks.on("dnd5e.prepareSheetContext", (sheet, partId, context) => {
   if ( sheet.actor?.type !== "character" ) return;
 
@@ -133,28 +159,20 @@ Hooks.on("dnd5e.prepareSheetContext", (sheet, partId, context) => {
 
   if ( partId === "extraSkills" ) {
     const stored = sheet.actor.getFlag(MODULE_ID, SKILLS_FLAG) ?? [];
-    context.extraSkills = stored.map(skill => {
-      const value = normalizeProgress(skill.mastery, skill.progress, MAX_MASTERY, false);
-      return {
-        id: skill.id,
-        name: skill.name,
-        icon: skill.icon || "icons/svg/book.svg",
-        description: skill.description ?? "",
-        mastery: value.level,
-        progress: value.progress,
-        stars: Array.from({ length: MAX_MASTERY }, (_, index) => ({
-          value: index + 1,
-          filled: index < value.level
-        })),
-        maximum: MAX_MASTERY,
-        complete: value.level === MAX_MASTERY
-      };
+    context.extraSkills = stored.map(entry => {
+      const skill = prepareMasteryEntry(entry, sheet.actor, "icons/svg/book.svg");
+      skill.allowsSubfeatures = MULTI_FEATURE_SKILLS.has(normalizeSkillName(skill.name));
+      skill.subfeatures = (entry.subfeatureIds ?? [])
+        .map(id => sheet.actor.items.get(id))
+        .filter(Boolean)
+        .map(item => ({ id: item.id, name: item.name, img: item.img }));
+      return skill;
     });
   }
 
   if ( partId === "weapons" ) {
     const stored = sheet.actor.getFlag(MODULE_ID, WEAPONS_FLAG) ?? [];
-    context.weapons = stored.map(prepareMasteryEntry);
+    context.weapons = stored.map(entry => prepareMasteryEntry(entry, sheet.actor));
   }
 
   if ( partId === "traits" ) {
@@ -199,13 +217,15 @@ Hooks.on("dnd5e.prepareSheetContext", (sheet, partId, context) => {
   }
 });
 
-function prepareMasteryEntry(entry) {
+function prepareMasteryEntry(entry, actor, defaultIcon = "icons/svg/sword.svg") {
+  const feature = actor?.items.get(entry.itemId);
   const value = normalizeProgress(entry.mastery, entry.progress, MAX_MASTERY, false);
   return {
     id: entry.id,
-    name: entry.name,
-    icon: entry.icon || "icons/svg/sword.svg",
-    description: entry.description ?? "",
+    itemId: feature?.id ?? null,
+    name: feature?.name ?? entry.name,
+    icon: feature?.img ?? entry.icon ?? defaultIcon,
+    description: feature?.system?.description?.value ?? entry.description ?? "",
     mastery: value.level,
     progress: value.progress,
     stars: Array.from({ length: MAX_MASTERY }, (_, index) => ({ value: index + 1, filled: index < value.level })),
@@ -318,6 +338,13 @@ function hideManagedFeatures(actor, element) {
   );
   const devotionItemId = actorDevotion(actor).itemId;
   if ( devotionItemId ) managedIds.add(devotionItemId);
+  for ( const mastery of actor.getFlag(MODULE_ID, WEAPONS_FLAG) ?? [] ) {
+    if ( mastery.itemId ) managedIds.add(mastery.itemId);
+  }
+  for ( const skill of actor.getFlag(MODULE_ID, SKILLS_FLAG) ?? [] ) {
+    if ( skill.itemId ) managedIds.add(skill.itemId);
+    for ( const id of skill.subfeatureIds ?? [] ) managedIds.add(id);
+  }
   if ( !managedIds.size ) return;
 
   const nativeFeatures = element.querySelector('[data-tab="features"]');
@@ -620,7 +647,26 @@ function setupMasteryCollection(actor, tab, flag, deleteTitle) {
     addSkill(actor, tab, flag);
   });
 
+  if ( [SKILLS_FLAG, WEAPONS_FLAG].includes(flag) ) {
+    const dropZone = tab.querySelector("[data-mes-feature-drop]");
+    dropZone?.addEventListener("dragover", event => {
+      event.preventDefault();
+      if ( event.dataTransfer ) event.dataTransfer.dropEffect = "copy";
+      dropZone.classList.add("mes-drop-active");
+    });
+    dropZone?.addEventListener("dragleave", event => {
+      if ( !dropZone.contains(event.relatedTarget) ) dropZone.classList.remove("mes-drop-active");
+    });
+    dropZone?.addEventListener("drop", event => {
+      event.preventDefault();
+      event.stopPropagation();
+      dropZone.classList.remove("mes-drop-active");
+      dropMasteryFeature(actor, event, flag);
+    });
+  }
+
   for ( const row of tab.querySelectorAll("[data-mes-skill-id]") ) {
+    if ( flag === SKILLS_FLAG ) setupSkillSubfeatures(actor, row);
     row.addEventListener("change", event => {
       if ( event.target.matches("[data-mes-progress-delta]") ) {
         event.stopPropagation();
@@ -642,6 +688,18 @@ function setupMasteryCollection(actor, tab, flag, deleteTitle) {
       const deltaButton = event.target.closest("[data-mes-apply-delta]");
       if ( deltaButton ) return applySkillProgressDelta(actor, row.dataset.mesSkillId, row, flag);
 
+      const chatButton = event.target.closest("[data-mes-chat-mastery]");
+      if ( chatButton ) {
+        return displayMasteryCard(actor, row.dataset.mesSkillId, flag);
+      }
+
+      const openFeatureButton = event.target.closest("[data-mes-open-mastery-feature]");
+      if ( openFeatureButton ) {
+        const mastery = (actor.getFlag(MODULE_ID, flag) ?? [])
+          .find(entry => entry.id === row.dataset.mesSkillId);
+        return actor.items.get(mastery?.itemId)?.sheet.render({ force: true });
+      }
+
       const adjustButton = event.target.closest("[data-mes-adjust]");
       if ( adjustButton ) adjustSkill(actor, row.dataset.mesSkillId, adjustButton, flag);
     });
@@ -651,6 +709,182 @@ function setupMasteryCollection(actor, tab, flag, deleteTitle) {
       applySkillProgressDelta(actor, row.dataset.mesSkillId, row, flag);
     });
   }
+}
+
+function setupSkillSubfeatures(actor, row) {
+  const skillId = row.dataset.mesSkillId;
+  const dropZone = row.querySelector("[data-mes-subfeature-drop]");
+  dropZone?.addEventListener("dragover", event => {
+    event.preventDefault();
+    if ( event.dataTransfer ) event.dataTransfer.dropEffect = "copy";
+    dropZone.classList.add("mes-drop-active");
+  });
+  dropZone?.addEventListener("dragleave", event => {
+    if ( !dropZone.contains(event.relatedTarget) ) dropZone.classList.remove("mes-drop-active");
+  });
+  dropZone?.addEventListener("drop", event => {
+    event.preventDefault();
+    event.stopPropagation();
+    dropZone.classList.remove("mes-drop-active");
+    dropSkillSubfeature(actor, skillId, event);
+  });
+
+  for ( const featureRow of row.querySelectorAll("[data-mes-subfeature-id]") ) {
+    const featureId = featureRow.dataset.mesSubfeatureId;
+    featureRow.querySelector("[data-mes-open-subfeature]")?.addEventListener("click", () => {
+      actor.items.get(featureId)?.sheet.render({ force: true });
+    });
+    featureRow.querySelector("[data-mes-chat-subfeature]")?.addEventListener("click", () => {
+      actor.items.get(featureId)?.displayCard();
+    });
+    featureRow.querySelector("[data-mes-remove-subfeature]")?.addEventListener("click", () => {
+      removeSkillSubfeature(actor, skillId, featureId);
+    });
+  }
+}
+
+async function dropSkillSubfeature(actor, skillId, event) {
+  if ( !actor.isOwner ) return;
+  const skills = foundry.utils.deepClone(actor.getFlag(MODULE_ID, SKILLS_FLAG) ?? []);
+  const skill = skills.find(entry => entry.id === skillId);
+  if ( !skill || !MULTI_FEATURE_SKILLS.has(normalizeSkillName(actor.items.get(skill.itemId)?.name ?? skill.name)) ) return;
+
+  let feature;
+  try {
+    feature = await Item.implementation.fromDropData(TextEditor.getDragEventData(event));
+  }
+  catch ( error ) {
+    console.warn(`${MODULE_ID} | Falha ao interpretar a subfeature arrastada.`, error);
+    return;
+  }
+  if ( !feature || feature.type !== "feat" ) {
+    ui.notifications.warn(game.i18n.localize("MES.Skills.SubfeatureOnly"));
+    return;
+  }
+  skill.subfeatureIds ??= [];
+  if ( feature.id === skill.itemId || (feature.parent?.uuid === actor.uuid && skill.subfeatureIds.includes(feature.id)) ) {
+    ui.notifications.warn(game.i18n.localize("MES.Skills.SubfeatureAlreadyAdded"));
+    return;
+  }
+  if ( feature.parent?.uuid !== actor.uuid ) {
+    const source = feature.toObject();
+    delete source._id;
+    [feature] = await actor.createEmbeddedDocuments("Item", [source]);
+  }
+  if ( !feature ) return;
+  skill.subfeatureIds.push(feature.id);
+  await actor.setFlag(MODULE_ID, SKILLS_FLAG, skills);
+}
+
+async function removeSkillSubfeature(actor, skillId, featureId) {
+  if ( !actor.isOwner ) return;
+  const skills = foundry.utils.deepClone(actor.getFlag(MODULE_ID, SKILLS_FLAG) ?? []);
+  const skill = skills.find(entry => entry.id === skillId);
+  if ( !skill?.subfeatureIds?.includes(featureId) ) return;
+  skill.subfeatureIds = skill.subfeatureIds.filter(id => id !== featureId);
+  await actor.setFlag(MODULE_ID, SKILLS_FLAG, skills);
+  await actor.items.get(featureId)?.delete();
+}
+
+async function displayMasteryCard(actor, id, flag) {
+  const stored = actor.getFlag(MODULE_ID, flag) ?? [];
+  const entry = stored.find(mastery => mastery.id === id);
+  if ( !entry ) return;
+
+  const defaultIcon = flag === WEAPONS_FLAG ? "icons/svg/sword.svg" : "icons/svg/book.svg";
+  const mastery = prepareMasteryEntry(entry, actor, defaultIcon);
+  const feature = actor.items.get(entry.itemId);
+  const enrichedDescription = await TextEditor.enrichHTML(mastery.description, {
+    async: true,
+    secrets: actor.isOwner,
+    relativeTo: feature ?? actor
+  });
+  const description = flag === WEAPONS_FLAG ? stripWeaponMetadata(enrichedDescription) : enrichedDescription;
+  const stars = Array.from({ length: MAX_MASTERY }, (_, index) =>
+    `<i class="${index < mastery.mastery ? "fa-solid" : "fa-regular"} fa-star" inert></i>`
+  ).join("");
+  const linkedFeatures = flag === SKILLS_FLAG
+    ? await Promise.all((entry.subfeatureIds ?? []).map(async featureId => {
+      const linkedFeature = actor.items.get(featureId);
+      if ( !linkedFeature ) return null;
+      const linkedDescription = await TextEditor.enrichHTML(linkedFeature.system?.description?.value ?? "", {
+        async: true,
+        secrets: actor.isOwner,
+        relativeTo: linkedFeature
+      });
+      return {
+        name: linkedFeature.name,
+        img: linkedFeature.img || "icons/svg/book.svg",
+        description: linkedDescription
+      };
+    }))
+    : [];
+  const availableLinkedFeatures = linkedFeatures.filter(Boolean);
+  const linkedFeaturesContent = availableLinkedFeatures.length ? `
+      <details class="mes-chat-subfeatures">
+        <summary>
+          <span><i class="fa-solid fa-layer-group" inert></i> ${game.i18n.localize("MES.Skills.Subfeatures")}</span>
+          <small>${availableLinkedFeatures.length}</small>
+          <i class="fa-solid fa-chevron-down mes-chat-chevron" inert></i>
+        </summary>
+        <div class="mes-chat-subfeature-list">
+          ${availableLinkedFeatures.map(linkedFeature => `
+          <details class="mes-chat-subfeature">
+            <summary>
+              <img src="${foundry.utils.escapeHTML(linkedFeature.img)}" alt="">
+              <strong>${foundry.utils.escapeHTML(linkedFeature.name)}</strong>
+              <i class="fa-solid fa-chevron-down mes-chat-chevron" inert></i>
+            </summary>
+            ${linkedFeature.description ? `<div class="mes-chat-subfeature-description">${linkedFeature.description}</div>` : ""}
+          </details>`).join("")}
+        </div>
+      </details>` : "";
+  const content = `
+    <article class="dnd5e2 chat-card item-card mes-weapon-chat-card">
+      <header class="card-header flexrow">
+        <img src="${foundry.utils.escapeHTML(mastery.icon)}" alt="">
+        <div class="mes-chat-heading">
+          <h3>${foundry.utils.escapeHTML(mastery.name)}</h3>
+          <section class="mes-chat-mastery">
+            <strong>${game.i18n.localize("MES.Skills.Mastery")}</strong>
+            <span class="mes-chat-stars">${stars}</span>
+            <b>${mastery.mastery}/${MAX_MASTERY}</b>
+          </section>
+        </div>
+      </header>
+      ${description ? `
+      <details class="mes-chat-description">
+        <summary><i class="fa-solid fa-chevron-down" inert></i> ${game.i18n.localize("MES.Skills.Description")}</summary>
+        <section class="card-content">${description}</section>
+      </details>` : ""}
+      ${linkedFeaturesContent}
+    </article>`;
+
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content
+  });
+}
+
+function stripWeaponMetadata(html) {
+  if ( !html ) return "";
+  const wrapper = document.createElement("div");
+  wrapper.innerHTML = html;
+  const labels = ["custo", "dano", "alcance", "crítico", "critico", "peso"];
+
+  for ( const block of wrapper.querySelectorAll("table, dl, ul, ol, .item-properties, .properties, p") ) {
+    if ( !block.parentNode ) continue;
+    const text = block.textContent.replace(/\s+/g, " ").trim().toLocaleLowerCase(game.i18n.lang);
+    const metadataLabels = new Set(labels.filter(label => text.includes(label)));
+    const isWeaponMetadata = metadataLabels.size >= 3;
+    const isEmptyAttributes = /^atributos\s*:\s*(?:—|-)?\s*$/.test(text);
+    if ( isWeaponMetadata || isEmptyAttributes ) block.remove();
+  }
+
+  for ( const empty of wrapper.querySelectorAll("p, div") ) {
+    if ( !empty.textContent.trim() && !empty.querySelector("img, video, audio, hr") ) empty.remove();
+  }
+  return wrapper.innerHTML.trim();
 }
 
 async function saveMagic(actor, event) {
@@ -716,11 +950,59 @@ async function addSkill(actor, element, flag = SKILLS_FLAG) {
   }
 
   const skills = foundry.utils.deepClone(actor.getFlag(MODULE_ID, flag) ?? []);
-  skills.push({
+  const entry = {
     id: foundry.utils.randomID(),
     name,
     icon: flag === WEAPONS_FLAG ? "icons/svg/sword.svg" : "icons/svg/book.svg",
     description: "",
+    mastery: 0,
+    progress: 0
+  };
+  if ( [SKILLS_FLAG, WEAPONS_FLAG].includes(flag) ) {
+    const [feature] = await actor.createEmbeddedDocuments("Item", [{ name, type: "feat", img: entry.icon }]);
+    if ( !feature ) return;
+    entry.itemId = feature.id;
+  }
+  skills.push(entry);
+  await actor.setFlag(MODULE_ID, flag, skills);
+}
+
+async function dropMasteryFeature(actor, event, flag) {
+  if ( !actor.isOwner ) return;
+  const data = TextEditor.getDragEventData(event);
+  let feature;
+  try {
+    feature = await Item.implementation.fromDropData(data);
+  }
+  catch ( error ) {
+    console.warn(`${MODULE_ID} | Falha ao interpretar a maestria de arma arrastada.`, error);
+    return;
+  }
+  if ( !feature || feature.type !== "feat" ) {
+    const key = flag === WEAPONS_FLAG ? "MES.Weapons.FeatureOnly" : "MES.Skills.FeatureOnly";
+    ui.notifications.warn(game.i18n.localize(key));
+    return;
+  }
+
+  const skills = foundry.utils.deepClone(actor.getFlag(MODULE_ID, flag) ?? []);
+  if ( feature.parent?.uuid === actor.uuid && skills.some(entry => entry.itemId === feature.id) ) {
+    const key = flag === WEAPONS_FLAG ? "MES.Weapons.AlreadyAdded" : "MES.Skills.AlreadyAdded";
+    ui.notifications.warn(game.i18n.localize(key));
+    return;
+  }
+  if ( feature.parent?.uuid !== actor.uuid ) {
+    const source = feature.toObject();
+    delete source._id;
+    [feature] = await actor.createEmbeddedDocuments("Item", [source]);
+  }
+  if ( !feature ) return;
+
+  skills.push({
+    id: foundry.utils.randomID(),
+    itemId: feature.id,
+    name: feature.name,
+    icon: feature.img || (flag === WEAPONS_FLAG ? "icons/svg/sword.svg" : "icons/svg/book.svg"),
+    description: feature.system?.description?.value ?? "",
     mastery: 0,
     progress: 0
   });
@@ -741,6 +1023,14 @@ async function saveSkill(actor, id, event, flag = SKILLS_FLAG) {
   const normalized = normalizeProgress(skill.mastery, skill.progress, MAX_MASTERY, false);
   skill.mastery = normalized.level;
   skill.progress = normalized.progress;
+  if ( [SKILLS_FLAG, WEAPONS_FLAG].includes(flag) && skill.itemId && ["name", "icon", "description"].includes(field) ) {
+    const update = field === "icon"
+      ? { img: skill.icon }
+      : field === "description"
+        ? { "system.description.value": skill.description }
+        : { name: skill.name };
+    await actor.items.get(skill.itemId)?.update(update);
+  }
   await actor.setFlag(MODULE_ID, flag, skills);
 }
 
@@ -782,6 +1072,7 @@ async function pickSkillIcon(actor, id, flag = SKILLS_FLAG) {
     type: "image",
     callback: async path => {
       skill.icon = path;
+      if ( [SKILLS_FLAG, WEAPONS_FLAG].includes(flag) && skill.itemId ) await actor.items.get(skill.itemId)?.update({ img: path });
       await actor.setFlag(MODULE_ID, flag, skills);
     }
   });
@@ -820,7 +1111,14 @@ async function deleteSkill(actor, id, flag = SKILLS_FLAG, deleteTitle = "MES.Del
     content: `<p>${game.i18n.format("MES.Delete.Content", { name: foundry.utils.escapeHTML(skill.name) })}</p>`,
     modal: true
   });
-  if ( confirmed ) await actor.setFlag(MODULE_ID, flag, skills.filter(entry => entry.id !== id));
+  if ( confirmed ) {
+    await actor.setFlag(MODULE_ID, flag, skills.filter(entry => entry.id !== id));
+    if ( [SKILLS_FLAG, WEAPONS_FLAG].includes(flag) && skill.itemId ) await actor.items.get(skill.itemId)?.delete();
+    if ( flag === SKILLS_FLAG ) {
+      const subfeatureIds = (skill.subfeatureIds ?? []).filter(featureId => actor.items.has(featureId));
+      if ( subfeatureIds.length ) await actor.deleteEmbeddedDocuments("Item", subfeatureIds);
+    }
+  }
 }
 
 function normalizeProgress(level, progress, maximum, allowMaximumProgress = true) {
@@ -842,6 +1140,14 @@ function normalizeProgress(level, progress, maximum, allowMaximumProgress = true
 function numberValue(value) {
   const number = Number(value);
   return Number.isFinite(number) ? number : 0;
+}
+
+function normalizeSkillName(value) {
+  return String(value ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toLocaleLowerCase(game.i18n.lang);
 }
 
 function compareSpectrumEntries(left, right) {
