@@ -66,9 +66,9 @@
         </button>
         {{#if @root.editable}}
         {{#if itemId}}
-        <button type="button" class="mes-icon-button mes-open-feature" data-mes-open-mastery-feature
+        <button type="button" class="mes-icon-button mes-open-feature" data-mes-open-mastery-feature data-mes-drag-mastery-feature draggable="true"
                 data-tooltip="{{localize 'MES.Weapons.OpenFeature'}}" aria-label="{{localize 'MES.Weapons.OpenFeature'}}">
-          <i class="fa-solid fa-up-right-from-square" inert></i>
+          <img src="{{icon}}" alt="">
         </button>
         {{/if}}
         <button type="button" class="mes-icon-button" data-mes-delete-skill

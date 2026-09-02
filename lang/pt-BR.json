@@ -41,7 +41,7 @@
       "DropHint": "Arraste uma Feature de Extra Skill para cá.",
       "FeatureOnly": "A Extra Skill deve ser uma Feature.",
       "AlreadyAdded": "Esta Extra Skill já foi adicionada.",
-      "OpenFeature": "Abrir Feature da Extra Skill",
+      "OpenFeature": "Abrir ou arrastar Feature da Extra Skill",
       "Subfeatures": "Features vinculadas",
       "SubfeatureDropHint": "Arraste uma Feature para vincular.",
       "SubfeatureOnly": "Apenas Features podem ser vinculadas a esta Extra Skill.",
@@ -63,7 +63,7 @@
       "DropHint": "Arraste uma Feature de maestria de arma para cá.",
       "FeatureOnly": "A maestria de arma deve ser uma Feature.",
       "AlreadyAdded": "Esta maestria de arma já foi adicionada.",
-      "OpenFeature": "Abrir Feature da maestria",
+      "OpenFeature": "Abrir ou arrastar Feature da maestria",
       "ShowInChat": "Enviar maestria para o chat",
       "Empty": "Nenhuma maestria de arma cadastrada."
     },

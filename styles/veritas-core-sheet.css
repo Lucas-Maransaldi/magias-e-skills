@@ -95,6 +95,9 @@
 .dnd5e2 .mes-skill-icon { position: relative; flex: 0 0 3.75rem; width: 3.75rem; height: 3.75rem; margin: 0; padding: 0; overflow: hidden; border: 1px solid var(--dnd5e-color-gold, #9f9275); border-radius: 7px; background: rgba(0, 0, 0, 0.16); }
 .dnd5e2 .mes-skill-icon img { width: 100%; height: 100%; border: 0; object-fit: cover; }
 .dnd5e2 .mes-skill-icon-editable > i { position: absolute; right: 2px; bottom: 2px; padding: 0.2rem; border-radius: 50%; background: rgba(0, 0, 0, 0.75); color: white; font-size: 0.6rem; }
+.dnd5e2 [data-mes-drag-mastery-feature] { cursor: grab; }
+.dnd5e2 [data-mes-drag-mastery-feature]:active { cursor: grabbing; }
+.dnd5e2 [data-mes-drag-mastery-feature] > img { width: 1.35rem; height: 1.35rem; border: 0; border-radius: 3px; object-fit: cover; pointer-events: none; }
 .dnd5e2 .mes-skill-identity { flex: 1; min-width: 0; }
 .dnd5e2 .mes-skill-identity h3 { margin: 0 0 0.35rem; overflow: hidden; font-size: 1.12rem; text-overflow: ellipsis; white-space: nowrap; }
 .dnd5e2 .mes-skill-name { box-sizing: border-box; width: 100%; height: 2rem; min-height: 2rem; margin: 0 0 0.3rem; font-size: 1.05rem; font-weight: 700; }

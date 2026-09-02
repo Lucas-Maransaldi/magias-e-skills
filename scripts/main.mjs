@@ -667,6 +667,18 @@ function setupMasteryCollection(actor, tab, flag, deleteTitle) {
 
   for ( const row of tab.querySelectorAll("[data-mes-skill-id]") ) {
     if ( flag === SKILLS_FLAG ) setupSkillSubfeatures(actor, row);
+    row.querySelector("[data-mes-drag-mastery-feature]")?.addEventListener("dragstart", event => {
+      const mastery = (actor.getFlag(MODULE_ID, flag) ?? [])
+        .find(entry => entry.id === row.dataset.mesSkillId);
+      const feature = actor.items.get(mastery?.itemId);
+      if ( !feature || !event.dataTransfer ) {
+        event.preventDefault();
+        return;
+      }
+      event.stopPropagation();
+      event.dataTransfer.effectAllowed = "copy";
+      event.dataTransfer.setData("text/plain", JSON.stringify(feature.toDragData()));
+    });
     row.addEventListener("change", event => {
       if ( event.target.matches("[data-mes-progress-delta]") ) {
         event.stopPropagation();
